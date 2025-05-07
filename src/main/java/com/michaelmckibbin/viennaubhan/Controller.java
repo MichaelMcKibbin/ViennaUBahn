@@ -99,11 +99,21 @@ public class Controller {
 
     @FXML
     public void initialize() {
+
+        System.out.println("Initializing Controller...");
+
         // Create and initialize the graph
         graph = new Graph();
 
         // Load data from CSV
         graph.loadFromCSV("/com/michaelmckibbin/viennaubhan/data/vienna_subway_list_1.csv");
+
+        // Print debug information
+        graph.printGraphStructure();
+        graph.printTransferStations();
+
+        System.out.println("\nController initialization complete.");
+
     }
 
     // Example method for finding a path between stations

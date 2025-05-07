@@ -130,16 +130,104 @@ public class Graph implements Initializable {
         return new Path(pathStations);
     }
 
-    // Method to load the graph from CSV
+//    // Method to load the graph from CSV
+//    public void loadFromCSV(String resourcePath) {
+//        try (InputStream inputStream = getClass().getResourceAsStream(resourcePath);
+//             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+//
+//            String line;
+//            Station previousStation = null;
+//            String currentLine = null;
+//
+//            while ((line = reader.readLine()) != null) {
+//                String[] data = line.split(",");
+//                if (data.length == 5) {
+//                    String stationName = data[0].trim();
+//                    String lineName = data[1].trim();
+//                    String lineColor = data[2].trim();
+//                    int x = Integer.parseInt(data[3].trim());
+//                    int y = Integer.parseInt(data[4].trim());
+//
+//                    Station station = new Station(stationName, lineName, lineColor, x, y);
+//                    addStation(station);
+//
+//                    // Add line color if it's a new line
+//                    if (!lineColors.containsKey(lineName)) {
+//                        addLine(lineName, lineColor);
+//                    }
+//
+//                    // Connect stations that are consecutive on the same line
+//                    if (currentLine != null && currentLine.equals(lineName) && previousStation != null) {
+//                        addConnection(previousStation, station);
+//                    }
+//
+//                    previousStation = station;
+//                    currentLine = lineName;
+//                }
+//            }
+//        } catch (IOException e) {
+//            System.err.println("Error loading graph from CSV: " + e.getMessage());
+//        }
+//    }
+//}
+
+    // Debug method to print all loaded stations and their connections
+    public void printGraphStructure() {
+        System.out.println("\n=== Graph Structure ===");
+        System.out.println("Total stations: " + adjacencyList.size());
+        System.out.println("\nLines and Colors:");
+        lineColors.forEach((line, color) ->
+                System.out.println("Line: " + line + " | Color: " + color));
+
+        System.out.println("\nStations and Connections:");
+        adjacencyList.forEach((station, connections) -> {
+            System.out.println("\nStation: " + station.getName());
+            System.out.println("Location: (" + station.getX() + ", " + station.getY() + ")");
+            System.out.println("Connected to:");
+            connections.forEach(connected ->
+                    System.out.println("  → " + connected.getName()));
+        });
+    }
+
+    // Debug method to print transfer stations
+    public void printTransferStations() {
+        System.out.println("\n=== Transfer Stations ===");
+        Map<String, Set<String>> stationLines = new HashMap<>();
+
+        // Group stations by their lines
+        adjacencyList.keySet().forEach(station -> {
+            if (!stationLines.containsKey(station.getName())) {
+                stationLines.put(station.getName(), new HashSet<>());
+            }
+            stationLines.get(station.getName()).add(station.getLineName());
+        });
+
+        // Print stations that appear on multiple lines
+        stationLines.forEach((stationName, lines) -> {
+            if (lines.size() > 1) {
+                System.out.println("\nTransfer Station: " + stationName);
+                System.out.println("Connected Lines: " + String.join(", ", lines));
+            }
+        });
+    }
+
+    // Modify your loadFromCSV method to include debug output
     public void loadFromCSV(String resourcePath) {
+        int lineCount = 0;
+        Set<String> uniqueStations = new HashSet<>();
+
         try (InputStream inputStream = getClass().getResourceAsStream(resourcePath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
+            System.out.println("\n=== Loading CSV Data ===");
+            System.out.println("Resource Path: " + resourcePath);
 
             String line;
             Station previousStation = null;
             String currentLine = null;
 
             while ((line = reader.readLine()) != null) {
+                lineCount++;
                 String[] data = line.split(",");
                 if (data.length == 5) {
                     String stationName = data[0].trim();
@@ -148,15 +236,16 @@ public class Graph implements Initializable {
                     int x = Integer.parseInt(data[3].trim());
                     int y = Integer.parseInt(data[4].trim());
 
-                    Station station = new Station(stationName, lineName,lineColor, x, y);
+                    uniqueStations.add(stationName);
+
+                    Station station = new Station(stationName, lineName, lineColor, x, y);
                     addStation(station);
 
-                    // Add line color if it's a new line
                     if (!lineColors.containsKey(lineName)) {
                         addLine(lineName, lineColor);
+                        System.out.println("Added new line: " + lineName + " (Color: " + lineColor + ")");
                     }
 
-                    // Connect stations that are consecutive on the same line
                     if (currentLine != null && currentLine.equals(lineName) && previousStation != null) {
                         addConnection(previousStation, station);
                     }
@@ -165,13 +254,17 @@ public class Graph implements Initializable {
                     currentLine = lineName;
                 }
             }
+
+            System.out.println("\nCSV Loading Summary:");
+            System.out.println("Total lines processed: " + lineCount);
+            System.out.println("Unique stations found: " + uniqueStations.size());
+            System.out.println("Number of subway lines: " + lineColors.size());
+
         } catch (IOException e) {
             System.err.println("Error loading graph from CSV: " + e.getMessage());
         }
     }
 }
-
-
 
 
 //public class    Graph implements Initializable {
