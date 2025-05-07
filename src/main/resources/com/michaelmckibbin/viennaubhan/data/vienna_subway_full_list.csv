@@ -1,0 +1,105 @@
+Station,Next Stop,Line,Color,WC,xCoordinate,yCoordinate
+Oberlaa,Neulaa,1,red,,832,956
+Neulaa,Alaudagasse,1,red,,810,934
+Alaudagasse,Altes Landgut,1,red,,790,912
+Altes Landgut,Troststrasse,1,red,1,768,891
+Troststrasse,Reumannplatz,1,red,,745,868
+Reumannplatz,Keplerplatz,1,red,,722,846
+Keplerplatz,Suedtiroler Platz - Hauptbahnhof,1,red,,712,810
+Suedtiroler Platz - Hauptbahnhof,Taubstummengasse,1,red,1,712,748
+Taubstummengasse,Karlsplatz,1,red,,712,680
+Karlsplatz,Stephansplatz,1,red,1,710,610
+Stephansplatz,Schwedenplatz,1,red,1,712,498
+Schwedenplatz,Nestroyplatz,1,red,1,789,405
+Nestroyplatz,Praterstern,1,red,,820,374
+Praterstern,Vorgartenstrasse,1,red,1,850,343
+Vorgartenstrasse,Donauinsel,1,red,,883,311
+Donauinsel,Kaisermuehlen/VIC,1,red,,920,273
+Kaisermuehlen/VIC,Alte Donau,1,red,1,946,249
+Alte Donau,Kagran,1,red,,966,288
+Kagran,Kagraner Platz,1,red,,996,198
+Kagraner Platz,Rennbahnweg,1,red,1,1019,176
+Rennbahnweg,Aderklaaer strasse,1,red,,1040,155
+Aderklaaer strasse,Grossfeldsiedlung,1,red,,1063,132
+Grossfeldsiedlung,Leopoldau,1,red,,1086,107
+Seestadt,Aspern Nord,2,purple,1,1378,395
+Aspern Nord,Hausfeldstrasse,2,purple,,1363,329
+Hausfeldstrasse,Aspernstrasse,2,purple,,1319,329
+Aspernstrasse,Donauspital,2,purple,,1288,358
+Donauspital,Hardeggasse,2,purple,1,1250,395
+Hardeggasse,Stadlau,2,purple,,1203,395
+Stadlau,Donaustadtbruecke,2,purple,1,1166,419
+Donaustadtbruecke,Donaumarina,2,purple,,1135,452
+Donaumarina,Stadion,2,purple,,1056,500
+Stadion,Krieau,2,purple,1,986,432
+Krieau,Messe-Prater,2,purple,,947,395
+Messe-Prater,Praterstern,2,purple,,916,365
+Praterstern,Taborstrasse,2,purple,1,850,343
+Taborstrasse,Schottenring,2,purple,,789,344
+Schottenring,Schottentor,2,purple,1,724,344
+Schottentor,Rathaus,2,purple,1,665,394
+Rathaus,Volkstheater,2,purple,,625,432
+Volkstheater,Museumsquartier,2,purple,1,600,500
+Museumsquartier,Karlsplatz,2,purple,,627,568
+Ottakring,Kendlerstrasse,3,orange,1,334,356
+Kendlerstrasse,Huetteldorfer strasse,3,orange,,362,385
+Huetteldorfer strasse,Johnstrasse,3,orange,1,383,407
+Johnstrasse,Schweglerstrasse,3,orange,,412,435
+Schweglerstrasse,Westbahnhof,3,orange,,438,461
+Westbahnhof,Zieglergasse,3,orange,1,479,499
+Zieglergasse,Neubaugasse,3,orange,,522,500
+Neubaugasse,Volkstheater,3,orange,1,558,500
+Volkstheater,Herrengasse,3,orange,1,600,500
+Herrengasse,Stephansplatz,3,orange,1,667,500
+Stephansplatz,Stubentor,3,orange,1,711,498
+Stubentor,Landstrasse,3,orange,,770,500
+Landstrasse,Rochusgasse,3,orange,,815,500
+Rochusgasse,Kardinal-Nagl-Platz,3,orange,,893,531
+Kardinal-Nagl-Platz,Schlachthausgasse,3,orange,,911,522
+Schlachthausgasse,Erdberg,3,orange,,932,570
+Erdberg,Gasometer,3,orange,1,955,592
+Gasometer,Zippererstrasse,3,orange,,976,613
+Zippererstrasse,Enkplatz,3,orange,,995,636
+Enkplatz,Simmering,3,orange,,995,680
+Huetteldorf,Ober St. Veit,4,green,1,220,616
+Ober St. Veit,Unter St. Veit,4,green,,248,616
+Unter St. Veit,Braunschweiggasse,4,green,,288,616
+Braunschweiggasse,Hietzing,4,green,,327,616
+Hietzing,Schoenbrunn,4,green,1,363,616
+Schoenbrunn,Meidling Haupstrasse,4,green,,398,616
+Meidling Haupstrasse,Laengenfeldgasse,4,green,1,435,616
+Laengenfeldgasse,Margaretenguertel,4,green,,479,616
+Margaretenguertel,Pilgramgasse,4,green,,529,616
+Pilgramgasse,Kettenbrueckengasse,4,green,,584,616
+Kettenbrueckengasse,Karlsplatz,4,green,,642,616
+Karlsplatz,Stadtpark,4,green,1,710,610
+Stadtpark,Landstrasse,4,green,,794,587
+Landstrasse,Schwedenplatz,4,green,,815,500
+Schwedenplatz,Schottenring,4,green,1,789,405
+Schottenring,Rossauer Laende,4,green,1,724,344
+Rossauer Laende,Friedensbruecke,4,green,,681,298
+Friedensbruecke,Spittelau,4,green,,642,260
+Spittelau,Heiligenstradt,4,green,1,614,207
+Siebenhirten,Perfektastrasse,6,brown,1,296,926
+Perfektastrasse,Erlaaer strasse,6,brown,,327,895
+Erlaaer strasse,Alterlaa,6,brown,,359,862
+Alterlaa,Am Schoepfwerk,6,brown,1,389,833
+Am Schoepfwerk,Tschwerttegasse,6,brown,,415,806
+Tschwerttegasse,Bahnhof Meidling,6,brown,,440,781
+Bahnhof Meidling,Niederhofstrasse,6,brown,1,479,741
+Niederhofstrasse,Laengenfeldgasse,6,brown,,479,696
+Laengenfeldgasse,Gumpendorfer strasse,6,brown,,479,616
+Gumpendorfer strasse,Westbahnhof,6,brown,,479,559
+Westbahnhof,Burggasse-Stadthalle,6,brown,1,479,499
+Burggasse-Stadthalle,Thaliastrasse,6,brown,,479,436
+Thaliastrasse,Josefstaedter strasse,6,brown,,479,397
+Josefstaedter strasse,Alser strasse,6,brown,,479,358
+Alser strasse,Michelbeuern - AKH,6,brown,1,493,317
+Michelbeuern - AKH,Waehringer strasse - Volksoper,6,brown,,519,290
+Waehringer strasse - Volksoper,Nussdorfer strasse,6,brown,,548,262
+Nussdorfer strasse,Spittelau,6,brown,,578,231
+Spittelau,Jaegerstrasse,6,brown,1,614,207
+Jaegerstrasse,Dresdner strasse,6,brown,,661,207
+Dresdner strasse,Handelskai,6,brown,,683,207
+Handelskai,Neue Donau,6,brown,1,720,173
+Neue Donau,Floridsdorf,6,brown,,789,104

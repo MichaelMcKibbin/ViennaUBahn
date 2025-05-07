@@ -1,0 +1,104 @@
+Oberlaa,Neulaa,U1,red,1,1
+Neulaa,Alaudagasse,U1,red,1,1
+Alaudagasse,Altes Landgut,U1,red,1,1
+Altes Landgut,Troststrasse,U1,red,1,1
+Troststrasse,Reumannplatz,U1,red,1,1
+Reumannplatz,Keplerplatz,U1,red,1,1
+Keplerplatz,Suedtiroler Platz - Hauptbahnhof,U1,red,1,1
+Suedtiroler Platz - Hauptbahnhof,Taubstummengasse,U1,red,1,1
+Taubstummengasse,Karlsplatz,U1,red,1,1
+Karlsplatz,Stephansplatz,U1,red,1,1
+Stephansplatz,Schwedenplatz,U1,red,1,1
+Schwedenplatz,Nestroyplatz,U1,red,1,1
+Nestroyplatz,Praterstern,U1,red,1,1
+Praterstern,Vorgartenstrasse,U1,red,1,1
+Vorgartenstrasse,Donauinsel,U1,red,1,1
+Donauinsel,Kaisermuehlen/VIC,U1,red,1,1
+Kaisermuehlen/VIC,Alte Donau,U1,red,1,1
+Alte Donau,Kagran,U1,red,1,1
+Kagran,Kagraner Platz,U1,red,1,1
+Kagraner Platz,Rennbahnweg,U1,red,1,1
+Rennbahnweg,Aderklaaer strasse,U1,red,1,1
+Aderklaaer strasse,Grossfeldsiedlung,U1,red,1,1
+Grossfeldsiedlung,Leopoldau,U1,red,1,1
+Seestadt,Aspern Nord,U2,purple,1,1
+Aspern Nord,Hausfeldstrasse,U2,purple,1,1
+Hausfeldstrasse,Aspernstrasse,U2,purple,1,1
+Aspernstrasse,Donauspital,U2,purple,1,1
+Donauspital,Hardeggasse,U2,purple,1,1
+Hardeggasse,Stadlau,U2,purple,1,1
+Stadlau,Donaustadtbruecke,U2,purple,1,1
+Donaustadtbruecke,Donaumarina,U2,purple,1,1
+Donaumarina,Stadion,U2,purple,1,1
+Stadion,Krieau,U2,purple,1,1
+Krieau,Messe-Prater,U2,purple,1,1
+Messe-Prater,Praterstern,U2,purple,1,1
+Praterstern,Taborstrasse,U2,purple,1,1
+Taborstrasse,Schottenring,U2,purple,1,1
+Schottenring,Schottentor,U2,purple,1,1
+Schottentor,Rathaus,U2,purple,1,1
+Rathaus,Volkstheater,U2,purple,1,1
+Volkstheater,Museumsquartier,U2,purple,1,1
+Museumsquartier,Karlsplatz,U2,purple,1,1
+Ottakring,Kendlerstrasse,U3,orange,1,1
+Kendlerstrasse,Huetteldorfer strasse,U3,orange,1,1
+Huetteldorfer strasse,Johnstrasse,U3,orange,1,1
+Johnstrasse,Schweglerstrasse,U3,orange,1,1
+Schweglerstrasse,Westbahnhof,U3,orange,1,1
+Westbahnhof,Zieglergasse,U3,orange,1,1
+Zieglergasse,Neubaugasse,U3,orange,1,1
+Neubaugasse,Volkstheater,U3,orange,1,1
+Volkstheater,Herrengasse,U3,orange,1,1
+Herrengasse,Stephansplatz,U3,orange,1,1
+Stephansplatz,Stubentor,U3,orange,1,1
+Stubentor,Landstrasse,U3,orange,1,1
+Landstrasse,Rochusgasse,U3,orange,1,1
+Rochusgasse,Kardinal-Nagl-Platz,U3,orange,1,1
+Kardinal-Nagl-Platz,Schlachthausgasse,U3,orange,1,1
+Schlachthausgasse,Erdberg,U3,orange,1,1
+Erdberg,Gasometer,U3,orange,1,1
+Gasometer,Zippererstrasse,U3,orange,1,1
+Zippererstrasse,Enkplatz,U3,orange,1,1
+Enkplatz,Simmering,U3,orange,1,1
+Huetteldorf,Ober St. Veit,U4,green,1,1
+Ober St. Veit,Unter St. Veit,U4,green,1,1
+Unter St. Veit,Braunschweiggasse,U4,green,1,1
+Braunschweiggasse,Hietzing,U4,green,1,1
+Hietzing,Schoenbrunn,U4,green,1,1
+Schoenbrunn,Meidling Haupstrasse,U4,green,1,1
+Meidling Haupstrasse,Laengenfeldgasse,U4,green,1,1
+Laengenfeldgasse,Margaretenguertel,U4,green,1,1
+Margaretenguertel,Pilgramgasse,U4,green,1,1
+Pilgramgasse,Kettenbrueckengasse,U4,green,1,1
+Kettenbrueckengasse,Karlsplatz,U4,green,1,1
+Karlsplatz,Stadtpark,U4,green,1,1
+Stadtpark,Landstrasse,U4,green,1,1
+Landstrasse,Schwedenplatz,U4,green,1,1
+Schwedenplatz,Schottenring,U4,green,1,1
+Schottenring,Rossauer Laende,U4,green,1,1
+Rossauer Laende,Friedensbruecke,U4,green,1,1
+Friedensbruecke,Spittelau,U4,green,1,1
+Spittelau,Heiligenstradt,U4,green,1,1
+Siebenhirten,Perfektastrasse,U6,brown,1,1
+Perfektastrasse,Erlaaer strasse,U6,brown,1,1
+Erlaaer strasse,Alterlaa,U6,brown,1,1
+Alterlaa,Am Schoepfwerk,U6,brown,1,1
+Am Schoepfwerk,Tschwerttegasse,U6,brown,1,1
+Tschwerttegasse,Bahnhof Meidling,U6,brown,1,1
+Bahnhof Meidling,Niederhofstrasse,U6,brown,1,1
+Niederhofstrasse,Laengenfeldgasse,U6,brown,1,1
+Laengenfeldgasse,Gumpendorfer strasse,U6,brown,1,1
+Gumpendorfer strasse,Westbahnhof,U6,brown,1,1
+Westbahnhof,Burggasse-Stadthalle,U6,brown,1,1
+Burggasse-Stadthalle,Thaliastrasse,U6,brown,1,1
+Thaliastrasse,Josefstaedter strasse,U6,brown,1,1
+Josefstaedter strasse,Alser strasse,U6,brown,1,1
+Alser strasse,Michelbeuern - AKH,U6,brown,1,1
+Michelbeuern - AKH,Waehringer strasse - Volksoper,U6,brown,1,1
+Waehringer strasse - Volksoper,Nussdorfer strasse,U6,brown,1,1
+Nussdorfer strasse,Spittelau,U6,brown,1,1
+Spittelau,Jaegerstrasse,U6,brown,1,1
+Jaegerstrasse,Dresdner strasse,U6,brown,1,1
+Dresdner strasse,Handelskai,U6,brown,1,1
+Handelskai,Neue Donau,U6,brown,1,1
+Neue Donau,Floridsdorf,U6,brown,1,1
