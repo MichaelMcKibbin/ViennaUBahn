@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="Added Graph Debug. Before adding stations to choice list.">
+    <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="BFS working. adjusting window layout.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Controller.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Graph.java" afterDir="false" />
@@ -90,7 +90,7 @@
       <option name="presentableId" value="Default" />
       <updated>1746566005019</updated>
       <workItem from="1746566006095" duration="637000" />
-      <workItem from="1746574202368" duration="23498000" />
+      <workItem from="1746574202368" duration="24646000" />
     </task>
     <task id="LOCAL-00001" summary="View and map open. Before adding stations to choice list.">
       <option name="closed" value="true" />
@@ -116,7 +116,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746590849065</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="BFS working. adjusting window layout.">
+      <option name="closed" value="true" />
+      <created>1746706261389</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1746706261389</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -125,6 +133,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="View and map open. Before adding stations to choice list." />
     <MESSAGE value="Added Graph Debug. Before adding stations to choice list." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Graph Debug. Before adding stations to choice list." />
+    <MESSAGE value="BFS working. adjusting window layout." />
+    <option name="LAST_COMMIT_MESSAGE" value="BFS working. adjusting window layout." />
   </component>
 </project>

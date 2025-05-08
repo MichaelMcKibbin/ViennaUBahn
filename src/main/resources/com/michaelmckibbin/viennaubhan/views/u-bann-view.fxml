@@ -39,7 +39,7 @@
         </left>
 <center>
     <StackPane>
-        <ImageView fx:id="mapImageView" preserveRatio="true">
+        <ImageView fx:id="mapImageView" preserveRatio="true" fitHeight="800.0" fitWidth="1000.0">
             <viewport>
                 <Rectangle2D />
             </viewport>

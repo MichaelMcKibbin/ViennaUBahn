@@ -6,6 +6,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 
@@ -127,14 +128,6 @@ public class Controller {
         graph.printGraphStructure();
         graph.printTransferStations();
 
-
-        // Bind the ImageView size to its parent container
-        mapImageView.fitWidthProperty().bind(
-                mapImageView.getParent().layoutBoundsProperty().map(bounds -> bounds.getWidth() - 10) // -10 for margin
-        );
-        mapImageView.fitHeightProperty().bind(
-                mapImageView.getParent().layoutBoundsProperty().map(bounds -> bounds.getHeight() - 10) // -10 for margin
-        );
 
         System.out.println("\nController initialization complete.");
 

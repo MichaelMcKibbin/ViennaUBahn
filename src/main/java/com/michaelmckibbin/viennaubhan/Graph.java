@@ -85,32 +85,67 @@ public class Graph implements Initializable {
         return new HashSet<>(adjacencyList.getOrDefault(station, new ArrayList<>()));
     }
 
-    // Your existing BFS implementation with some improvements
+    // BFS algorithm with debug output
     public Path bfsAlgorithm(Station start, Station end) {
         if (start == null || end == null) {
             return null;
         }
 
-        Map<Station, Station> previous = new HashMap<>();
-        Queue<Station> queue = new LinkedList<>();
-        Set<Station> visited = new HashSet<>();
+        // Performance metrics
+        long startTime = System.nanoTime();
+        int nodesVisited = 0;
+        int maxQueueSize = 0;
 
+
+        // Queue for BFS traversal
+        Queue<Station> queue = new LinkedList<>();
+        // Keep track of visited stations to avoid cycles
+        Set<Station> visited = new HashSet<>();
+        // Store the path information (which station we came from)
+        Map<Station, Station> previous = new HashMap<>();
+
+        // Start BFS from the start station
         queue.add(start);
         visited.add(start);
 
-        while (!queue.isEmpty()) {
-            Station current = queue.poll();
+        System.out.println("\nStarting BFS from: " + start.getName());
+        int level = 0;
+        int currentLevelSize = 1;
+        int nextLevelSize = 0;
 
+        while (!queue.isEmpty()) {
+            // Track maximum queue size
+            maxQueueSize = Math.max(maxQueueSize, queue.size());
+
+            Station current = queue.poll();  // Get next station
+            nodesVisited++;
+            currentLevelSize--;
+            System.out.println("Exploring: " + current.getName() + " (Level " + level + ")");
+
+
+            // If found destination, build and return the path
             if (current.equals(end)) {
-                return buildPath(previous, start, end);
+                System.out.println("Found destination!");
+                long endTime = System.nanoTime();
+                return buildPath(previous, start, end, endTime - startTime, nodesVisited, maxQueueSize);
             }
 
+            // Explore all neighboring stations
             for (Station neighbor : getNeighbors(current)) {
                 if (!visited.contains(neighbor)) {
+                    System.out.println("  → Adding neighbor: " + neighbor.getName());
                     visited.add(neighbor);
                     previous.put(neighbor, current);
                     queue.add(neighbor);
+                    nextLevelSize++;
+
                 }
+            }
+            if (currentLevelSize == 0) {
+                level++;
+                currentLevelSize = nextLevelSize;
+                nextLevelSize = 0;
+                System.out.println("\nMoving to level " + level);
             }
         }
 
@@ -118,58 +153,19 @@ public class Graph implements Initializable {
     }
 
     // Helper method to build the path from the BFS result
-    private Path buildPath(Map<Station, Station> previous, Station start, Station end) {
+    private Path buildPath(Map<Station, Station> previous, Station start, Station end,
+                           long executionTimeNanos, int nodesVisited, int maxQueueSize) {
         List<Station> pathStations = new ArrayList<>();
         Station current = end;
 
+        // Work backwards from end to start
         while (current != null) {
-            pathStations.add(0, current);
+            pathStations.add(0, current);  // Add to front of list
             current = previous.get(current);
         }
 
-        return new Path(pathStations);
+        return new Path(pathStations, executionTimeNanos, nodesVisited, maxQueueSize);
     }
-
-//    // Method to load the graph from CSV
-//    public void loadFromCSV(String resourcePath) {
-//        try (InputStream inputStream = getClass().getResourceAsStream(resourcePath);
-//             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-//
-//            String line;
-//            Station previousStation = null;
-//            String currentLine = null;
-//
-//            while ((line = reader.readLine()) != null) {
-//                String[] data = line.split(",");
-//                if (data.length == 5) {
-//                    String stationName = data[0].trim();
-//                    String lineName = data[1].trim();
-//                    String lineColor = data[2].trim();
-//                    int x = Integer.parseInt(data[3].trim());
-//                    int y = Integer.parseInt(data[4].trim());
-//
-//                    Station station = new Station(stationName, lineName, lineColor, x, y);
-//                    addStation(station);
-//
-//                    // Add line color if it's a new line
-//                    if (!lineColors.containsKey(lineName)) {
-//                        addLine(lineName, lineColor);
-//                    }
-//
-//                    // Connect stations that are consecutive on the same line
-//                    if (currentLine != null && currentLine.equals(lineName) && previousStation != null) {
-//                        addConnection(previousStation, station);
-//                    }
-//
-//                    previousStation = station;
-//                    currentLine = lineName;
-//                }
-//            }
-//        } catch (IOException e) {
-//            System.err.println("Error loading graph from CSV: " + e.getMessage());
-//        }
-//    }
-//}
 
     // Debug method to print all loaded stations and their connections
     public void printGraphStructure() {
@@ -211,7 +207,7 @@ public class Graph implements Initializable {
         });
     }
 
-    // Modify your loadFromCSV method to include debug output
+    // Modify loadFromCSV method to include debug output
     public void loadFromCSV(String resourcePath) {
         int lineCount = 0;
         Set<String> uniqueStations = new HashSet<>();
@@ -265,124 +261,3 @@ public class Graph implements Initializable {
         }
     }
 }
-
-
-//public class    Graph implements Initializable {
-//    // A static graph object to represent the graph
-//    public static Graph graph;
-//
-//    // A station adjacency list to represent vertices on the graph
-//    private Map<Station, List<Station>> adjacencyList;
-//
-//    // Method to get the set of neighbors of a given station
-//    public Set<Station> getNeighbors(Station station) {
-//        return station.getNeighborStations().keySet();
-//    }
-//
-//    // Method to find the shortest path between two stations using BFS
-//    public Path bfsAlgorithm(Station start, Station end) {
-//        // Initialize a previous map, queue, and visited set
-//        Map<Station, Station> previous = new HashMap<>();
-//        Queue<Station> queue = new LinkedList<>();
-//        Set<Station> visited = new HashSet<>();
-//
-//        // Add the start station to the queue and visited set
-//        queue.add(start);
-//        visited.add(start);
-//
-//        // While the queue is not empty
-//        while (!queue.isEmpty()) {
-//            // Get the next station from the queue
-//            Station current = queue.poll();
-//
-//            // If we have reached the end station, build the path and return it
-//            if (current.equals(end)) {
-//                List<Station> path = new ArrayList<>();
-//                int stops = 0;
-//
-//                Station pathStation = end;
-//                while (pathStation != null) {
-//                    path.add(0, pathStation);
-//                    pathStation = previous.get(pathStation);
-//                    stops++;
-//                }
-//
-//                return new Path(path, stops - 1);
-//            }
-//
-//            // Otherwise, get the neighbors of the current station and explore them
-//            Set<Station> neighbors = getNeighbors(current);
-//            for (Station neighbor : neighbors) {
-//                if (!visited.contains(neighbor)) {
-//                    visited.add(neighbor);
-//                    queue.add(neighbor);
-//                    previous.put(neighbor, current);
-//                }
-//            }
-//        }
-//
-//        // If no path is found, return null
-//        return null;
-//    }
-//
-//
-//    // Method to find the shortest path between two stations using Dijkstra's algorithm
-//    public Path dijkstraAlgorithm(Set<Station> allStations, Station start, Station end) {
-//        // Initialize data structures for distances, previous stations, and a priority queue
-//        Map<Station, Double> distances = new HashMap<>();
-//        Map<Station, Station> previous = new HashMap<>();
-//        PriorityQueue<Station> queue = new PriorityQueue<>((a, b) -> Double.compare(distances.get(a), distances.get(b)));
-//
-//        // Initialize the distances map with INFINITY distance for all stations, except for the start station, which has distance 0
-//        for (Station station : allStations) {
-//            distances.put(station, Double.MAX_VALUE);
-//        }
-//        distances.put(start, 0.0);
-//
-//        // Start the search from the start station
-//        queue.add(start);
-//
-//        while (!queue.isEmpty()) {
-//            Station current = queue.poll();
-//
-//            // If we have reached the end station, build the path and return it
-//            if (current.equals(end)) {
-//                List<Station> path = new ArrayList<>();
-//                double totalDistance = 0.0;
-//
-//                // Build the path and calculate the total distance by backtracking through the previous stations
-//                for (Station station = end; station != null; station = previous.get(station)) {
-//                    path.add(0, station);
-//                    if (previous.get(station) != null) {
-//                        totalDistance += distances.get(station);
-//                    }
-//                }
-//
-//                return new Path(path, totalDistance);
-//            }
-//
-//            // Otherwise, get the neighbors of the current station and explore them
-//            for (Station neighbor : getNeighbors(current)) {
-//                // Calculate the distance from the start station to the neighbor through the current station
-//                double distance = distances.get(current) + current.getNeighborStations().get(neighbor);
-//
-//                // If the calculated distance is smaller than the previously recorded distance, update it
-//                if (distance < distances.get(neighbor)) {
-//                    distances.put(neighbor, distance);
-//                    previous.put(neighbor, current);
-//                    queue.add(neighbor);
-//                }
-//            }
-//        }
-//
-//        // If no path is found, return null
-//        return null;
-//    }
-//
-//
-//    // Method to initialize the Graph object
-//    public void initialize(URL url, ResourceBundle resourceBundle){
-//        // Set the static graph object to this
-//        graph = this;
-//    }
-//}
