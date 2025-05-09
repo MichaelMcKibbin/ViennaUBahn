@@ -109,8 +109,11 @@ public class Controller {
     private ComboBox<Station> endStationComboBox;
     @FXML
     private VBox routeInfoBox;
+//    @FXML
+//    private ListView<String> routeListView;
     @FXML
-    private ListView<String> routeListView;
+    private ListView<Station> routeListView;
+
     @FXML
     public Label numberOfStopsLabel;
     @FXML
@@ -448,21 +451,59 @@ private void displayPerformanceMetrics(Path path) {
 
 
 
+//    private void displayRoute(Path path) {
+//        // Clear previous route
+//        routeListView.getItems().clear();
+//
+//        // Add stations to the list view
+//        path.getStations().forEach(station ->
+//                routeListView.getItems().add(station.getName())
+//        );
+//
+//        // Update number of stops
+//        numberOfStopsLabel.setText("Total stops: " + path.getNumberOfStops());
+//
+//        // Show route info
+//        routeInfoBox.setVisible(true);
+//    }
+
     private void displayRoute(Path path) {
-        // Clear previous route
-        routeListView.getItems().clear();
+    // Clear previous route
+    routeListView.getItems().clear();
 
-        // Add stations to the list view
-        path.getStations().forEach(station ->
-                routeListView.getItems().add(station.getName())
-        );
+    // Add stations to the list view
+    path.getStations().forEach(station ->
+            routeListView.getItems().add(station)  // Add the entire station object instead of just the name
+    );
 
-        // Update number of stops
-        numberOfStopsLabel.setText("Total stops: " + path.getNumberOfStops());
+    // Set custom cell factory
+    routeListView.setCellFactory(listView -> new ListCell<Station>() {
+        @Override
+        protected void updateItem(Station station, boolean empty) {
+            super.updateItem(station, empty);
 
-        // Show route info
-        routeInfoBox.setVisible(true);
-    }
+            if (empty || station == null) {
+                setText(null);
+                setStyle(null);
+            } else {
+                // Combine station name and line name
+                setText(station.getName() + " " + station.getLineName());
+
+                // Set background color using the line color
+                // Assuming getLineColor() returns a valid color string
+                setStyle("-fx-background-color: " + station.getLineColor() + ";" +
+                        "-fx-text-fill: white;"); // White text for better contrast
+            }
+        }
+    });
+
+    // Update number of stops
+    numberOfStopsLabel.setText("Total stops: " + path.getNumberOfStops());
+
+    // Show route info
+    routeInfoBox.setVisible(true);
+}
+
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

@@ -54,11 +54,11 @@
 </center>
 
 <right>
-    <VBox prefWidth="200" minWidth="150" maxWidth="250" spacing="10">
+    <VBox prefWidth="200" maxWidth="250" spacing="10">
         <!-- Route Information -->
         <VBox fx:id="routeInfoBox" spacing="5" visible="false">
             <Label style="-fx-font-weight: bold" text="Route:" />
-            <ListView fx:id="routeListView" prefHeight="250" />
+            <ListView fx:id="routeListView" prefHeight="350" />
             <Label fx:id="numberOfStopsLabel" />
         </VBox>
 
