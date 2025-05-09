@@ -38,8 +38,8 @@
             </HBox>
         </left>
 <center>
-    <StackPane>
-        <ImageView fx:id="mapImageView" preserveRatio="true" fitHeight="800.0" fitWidth="1000.0">
+    <StackPane fx:id="mapContainer">
+        <ImageView fx:id="mapImageView" preserveRatio="true" >
             <viewport>
                 <Rectangle2D />
             </viewport>

@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="BFS working. adjusting window layout.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/LineColor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Graph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Path.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Path.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubhan/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubhan/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubhan/data/vienna_subway_list_1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubhan/data/vienna_subway_list_1.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubhan/views/u-bann-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubhan/views/u-bann-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,8 +17,18 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubhan/Controller.java" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -90,7 +100,7 @@
       <option name="presentableId" value="Default" />
       <updated>1746566005019</updated>
       <workItem from="1746566006095" duration="637000" />
-      <workItem from="1746574202368" duration="24646000" />
+      <workItem from="1746574202368" duration="44371000" />
     </task>
     <task id="LOCAL-00001" summary="View and map open. Before adding stations to choice list.">
       <option name="closed" value="true" />
@@ -124,7 +134,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746706261389</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="BFS working. adjusting window layout.">
+      <option name="closed" value="true" />
+      <created>1746707294922</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1746707294922</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
