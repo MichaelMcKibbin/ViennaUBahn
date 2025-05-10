@@ -16,13 +16,14 @@
         <left>
                 <!-- Station Selection Controls -->
                 <VBox>
-
+                    <Label text="Start Station:" />
                     <ComboBox fx:id="startStationComboBox" prefWidth="150" promptText="Select start station" />
+                    <Label text="End Station" />
                     <ComboBox fx:id="endStationComboBox" prefWidth="150" promptText="Select end station" />
 
                 <!-- Waypoints section -->
 
-                    <Label text="Waypoints:" />
+                    <Label text="Waypoints" />
                     <ComboBox fx:id="waypointComboBox" prefWidth="150" promptText="Choose waypoint" />
                     <Button fx:id="addWaypointButton" prefWidth="150" onAction="#handleAddWaypoint" text="Add waypoint" />
                     <ListView fx:id="waypointsListView" prefHeight="150" prefWidth="150" />
@@ -68,17 +69,26 @@
             <Label style="-fx-font-weight: bold" text="Performance Analysis" />
             <Label fx:id="performanceLabel" wrapText="true" />
         </VBox>
+        <VBox>
+            <Button fx:id="resetButton" text="Reset/Clear" onAction="#handleResetMap" />
+        </VBox>
     </VBox>
 </right>
 
 
         <bottom>
-            <HBox maxHeight="200" minHeight="50" prefHeight="150">
-                <VBox spacing="5">
-                    <ListView fx:id="avoidListview" prefHeight="50.0" prefWidth="246.0" />
-                </VBox>
-
-            </HBox>
-        </bottom>
-    </BorderPane>
+            <VBox spacing="5">
+                <HBox spacing="5">
+                <!-- for later use
+                    <ChoiceBox fx:id="avoidStationChoiceBox" />
+                    <Button fx:id="addAvoidStationButton" text="Add" onAction="#handleAddAvoidStation" />
+                 -->
+                </HBox>
+                <!-- for later use
+               <ListView fx:id="avoidStationsListView" />
+               <Button fx:id="removeAvoidStationButton" text="Remove Selected" onAction="#handleRemoveAvoidStation" />
+               -->
+           </VBox>
+       </bottom>
+   </BorderPane>
 </AnchorPane>

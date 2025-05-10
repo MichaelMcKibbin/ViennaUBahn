@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class Controller {
 
 
+    public Button resetButton;
     @FXML
     private StackPane mapContainer; // Wrap ImageView in a StackPane
     private Pane routeLayer; // Layer for drawing routes
@@ -30,23 +31,29 @@ public class Controller {
     private Image greyMap;
 
 
-    // Waypoints and Avoids
+    // Waypoints
     @FXML
     public Button removeWaypointButton;
     @FXML
     public Button addWaypointButton;
     @FXML
-    public ListView avoidListview;
-    @FXML
     public ComboBox<Station> waypointComboBox;
     @FXML
-    public ListView waypointsListView;
-    @FXML
     public Label waypointStatusLabel;
-
+    @FXML
+    public ListView waypointsListView;
     private ObservableList<Station> waypoints = FXCollections.observableArrayList();
 
-
+//    //Avoid stations
+//    @FXML
+//    public Button removeAvoidStationButton;
+//    @FXML
+//    public Button addAvoidStationButton;
+//    @FXML
+//    public ChoiceBox<Station> avoidStationChoiceBox;
+//    @FXML
+//    public ListView avoidStationsListView;
+//    private ObservableList<Station> avoidStations  = FXCollections.observableArrayList();
 
     // ComboBoxes & Search Buttons
     @FXML
@@ -87,7 +94,7 @@ public class Controller {
     private static final double INTERMEDIATE_STATION_MARKER_SIZE = 4;
     private static final double END_STATION_MARKER_SIZE = 9.0;
     private static final double LINE_CHANGE_STATION_MARKER_SIZE = 7;
-    private static final double WAYPOINT_MARKER_SIZE = 4.0;
+    private static final double WAYPOINT_STATION_MARKER_SIZE = 8.0;
     private static final double AVOID_MARKER_SIZE = 4.0;
 
     // Constants for marker colors
@@ -95,6 +102,7 @@ public class Controller {
     private static final Color END_STATION_FILL_COLOR = Color.LIMEGREEN;
     private static final Color LINE_CHANGE_STATION_FILL_COLOR = Color.YELLOW;
     private static final Color INTERMEDIATE_STATION_FILL_COLOR = Color.LAWNGREEN;
+    private static final Color WAYPOINT_STATION_FILL_COLOR = Color.INDIGO;
     private static final Color STATION_STROKE_COLOR = Color.BLACK;
 
 
@@ -115,12 +123,12 @@ public class Controller {
 
 
     // Waypoints & Avoids
-    @FXML
-    public void handleAddAvoidStation(ActionEvent actionEvent) {
-    }
-    @FXML
-    public void handleRemoveAvoidStation(ActionEvent actionEvent) {
-    }
+//    @FXML
+//    public void handleAddAvoidStation(ActionEvent actionEvent) {
+//    }
+//    @FXML
+//    public void handleRemoveAvoidStation(ActionEvent actionEvent) {
+//    }
     @FXML
     private void handleAddWaypoint() {
         Station selected = waypointComboBox.getValue();
@@ -170,7 +178,7 @@ public class Controller {
         // Load data from CSV
         graph.loadFromCSV("/com/michaelmckibbin/viennaubahn/data/vienna_subway_list_1.csv");
 
-        // Populate Start Station, End Station & Waypoints ComboBoxes with station names
+        // Populate ComboBoxes with station names
         populateStationComboBoxes();
 
         // Add listeners for station selection
@@ -259,6 +267,13 @@ public class Controller {
                 waypointsListView.getSelectionModel().selectedItemProperty().isNull()
         );
 
+
+//        // Initialize avoidStations ListView
+//        avoidStationsListView.setItems(avoidStations);
+
+
+
+
         System.out.println("\nController initialization complete.");
 
     }
@@ -272,6 +287,7 @@ public class Controller {
         startStationComboBox.getItems().addAll(stations);
         endStationComboBox.getItems().addAll(stations);
         waypointComboBox.getItems().addAll(stations);
+        //  avoidStationChoiceBox.getItems().addAll(stations);
 
         // Set cell factory to display station names
         setCellFactory(startStationComboBox);
@@ -421,6 +437,12 @@ public class Controller {
                 Station nextStation = stations.get(i + 1);
                 isLineChange = !station.getLineColor().equals(nextStation.getLineColor());
             }
+            // check if this is a waypoint
+            boolean isWaypoint = waypoints.contains(station);
+
+
+
+
             // Set different colors and sizes for start and end stations
             if (i == 0) {  // Start station
                 marker.setRadius(START_STATION_MARKER_SIZE);
@@ -435,6 +457,11 @@ public class Controller {
             } else if (isLineChange) {  // Line change point
                 marker.setRadius(LINE_CHANGE_STATION_MARKER_SIZE); // Using same size as start/end stations
                 marker.setFill(LINE_CHANGE_STATION_FILL_COLOR);
+                marker.setStroke(STATION_STROKE_COLOR);
+                marker.setStrokeWidth(1);
+            }else if (isWaypoint){
+                marker.setRadius(WAYPOINT_STATION_MARKER_SIZE);
+                marker.setFill(WAYPOINT_STATION_FILL_COLOR);
                 marker.setStroke(STATION_STROKE_COLOR);
                 marker.setStrokeWidth(1);
             } else {  // Intermediate stations
@@ -476,7 +503,7 @@ public class Controller {
 //}
 
     @FXML
-private void handleFindRouteBFS() {
+    private void handleFindRouteBFS() {
     Station startStation = startStationComboBox.getValue();
     Station endStation = endStationComboBox.getValue();
 
@@ -561,7 +588,7 @@ private void handleFindRouteBFS() {
     }
 
 
-private void displayPerformanceMetrics(Path path) {
+    private void displayPerformanceMetrics(Path path) {
     // Create performance information string
     String performanceInfo = String.format("""
         Performance Metrics:
@@ -577,7 +604,7 @@ private void displayPerformanceMetrics(Path path) {
     // Update UI
     performanceLabel.setText(performanceInfo);
     performanceBox.setVisible(true);
-}
+    }
 
     private void displayRoute(Path path) {
     // Clear previous route
@@ -614,7 +641,7 @@ private void displayPerformanceMetrics(Path path) {
 
     // Show route info
     routeInfoBox.setVisible(true);
-}
+    }
 
 
     private void showAlert(String message) {
@@ -625,7 +652,30 @@ private void displayPerformanceMetrics(Path path) {
         alert.showAndWait();
     }
 
+    @FXML
+    private void handleResetMap() {
+        // Clear the route layer
+        routeLayer.getChildren().clear();
 
+        // Clear any selected stations
+        startStationComboBox.setValue(null);
+        endStationComboBox.setValue(null);
+
+        // Clear waypoints
+        waypoints.clear();
+        waypointsListView.getItems().clear();
+
+        // Reset any performance/route information
+        if (performanceLabel != null) {
+            performanceLabel.setText("");
+        }
+        if (routeInfoBox != null) {
+            routeInfoBox.setVisible(false);
+        }
+
+        // Redraw the color map
+        setColorMap();
+    }
 
 
 }
