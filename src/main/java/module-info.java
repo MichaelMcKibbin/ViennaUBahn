@@ -5,6 +5,6 @@ module com.michaelmckibbin.viennaubhan {
     requires org.controlsfx.controls;
     requires org.kordamp.ikonli.javafx;
 
-    opens com.michaelmckibbin.viennaubhan to javafx.fxml;
-    exports com.michaelmckibbin.viennaubhan;
+    opens com.michaelmckibbin.viennaubahn to javafx.fxml;
+    exports com.michaelmckibbin.viennaubahn;
 }

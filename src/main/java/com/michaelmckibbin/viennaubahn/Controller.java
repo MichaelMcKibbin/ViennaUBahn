@@ -1,12 +1,12 @@
-package com.michaelmckibbin.viennaubhan;
+package com.michaelmckibbin.viennaubahn;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -14,43 +14,61 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.util.StringConverter;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class Controller {
-    public static Controller maincon;
-    public Button dijkstraSearchButton;
-    public ListView waypointListview;
-    public Button removeWaypointButton;
-    public Button addWaypointButton;
-    public ListView avoidListview;
-    public Button removeAvoidStationButton;
-    public Button addAvoidStationButton;
-    public ComboBox fromComboBox;
-    public ComboBox destinationComboBox;
-    public Button searchButton;
-    public AnchorPane rootPane;
-    public TableView routesTableView;
-    public Canvas canvasImage;
-    public Button dfsButton;
-    public Button bfsButton;
-    public Button dijkstraWithPenalties;
-    public Button dijkstraShortestPath;
+
+
+    @FXML
+    private StackPane mapContainer; // Wrap ImageView in a StackPane
+    private Pane routeLayer; // Layer for drawing routes
     private Image colorMap;
     private Image greyMap;
 
+
+    // Waypoints and Avoids
     @FXML
-    public Button clearMap;
+    public Button removeWaypointButton;
     @FXML
-    public MenuButton waypointStation;
+    public Button addWaypointButton;
     @FXML
-    public AnchorPane mapPane;
+    public ListView avoidListview;
     @FXML
-    public Button bfsSearchButton;
+    public ComboBox<Station> waypointComboBox;
+    @FXML
+    public ListView waypointsListView;
+    @FXML
+    public Label waypointStatusLabel;
+
+    private ObservableList<Station> waypoints = FXCollections.observableArrayList();
+
+
+
+    // ComboBoxes & Search Buttons
+    @FXML
+    private ComboBox<Station> startStationComboBox;
+    @FXML
+    private ComboBox<Station> endStationComboBox;
+    @FXML
+    public Button dfsButton;
+    @FXML
+    public Button bfsButton;
+    @FXML
+    public Button dijkstraWithPenalties;
+    @FXML
+    public Button dijkstraShortestPath;
+
+
+
+
+    // Imageview & related settings
     @FXML
     public ImageView mapImageView;
+
     // Original image dimensions
     private static final double ORIGINAL_WIDTH = 1488.0;
     private static final double ORIGINAL_HEIGHT = 993.0;
@@ -80,61 +98,23 @@ public class Controller {
     private static final Color STATION_STROKE_COLOR = Color.BLACK;
 
 
-
-
-
-
-    @FXML
-    private StackPane mapContainer; // Wrap ImageView in a StackPane
-
-    private Pane routeLayer; // Layer for drawing routes
-
-    @FXML
-    public ListView routeOutput;
-    @FXML
-    public Button initialiseMapButton;
-    @FXML
-    public MenuButton startStation;
-    @FXML
-    public MenuButton destinationStation;
-    @FXML
-    public MenuButton avoidStation;
+    // Performance stats
     @FXML
     private VBox performanceBox;
     @FXML
     private Label performanceLabel;
-    @FXML
-    private ComboBox<Station> startStationComboBox;
-    @FXML
-    private ComboBox<Station> endStationComboBox;
+
+    // Route information
     @FXML
     private VBox routeInfoBox;
-//    @FXML
-//    private ListView<String> routeListView;
     @FXML
     private ListView<Station> routeListView;
-
     @FXML
     public Label numberOfStopsLabel;
-    @FXML
-    private Station selectedWaypointStation;
-    private Circle firstStationRing;
-    private Circle destinationStationCircle;
-    private Circle firstStationCircle;
-    private Station selectedDestinationStation;
-    private Station firstSelectedStation;
-    private Circle destinationStationOuterRing;
-    private boolean isMapPopulated = false;
 
-    @FXML
-    public void dfsSearch(ActionEvent actionEvent) {
-    }
-    @FXML
-    public void handleDijkstraWithPenalties(ActionEvent actionEvent) {
-    }
-    @FXML
-    public void handleDijkstraShortestPath(ActionEvent actionEvent) {
-    }
+
+
+    // Waypoints & Avoids
     @FXML
     public void handleAddAvoidStation(ActionEvent actionEvent) {
     }
@@ -142,14 +122,36 @@ public class Controller {
     public void handleRemoveAvoidStation(ActionEvent actionEvent) {
     }
     @FXML
-    public void handleAddWaypoint(ActionEvent actionEvent) {
+    private void handleAddWaypoint() {
+        Station selected = waypointComboBox.getValue();
+        if (selected != null && !waypoints.contains(selected)) {
+            waypoints.add(selected);
+            waypointComboBox.setValue(null); // Clear selection
+
+            // Add visual reminder to recalculate route!
+            waypointStatusLabel.setText("Press Search to recalculate");
+            waypointStatusLabel.setStyle("-fx-text-fill: #FF0000; -fx-font-weight: bold;");
+            // If desired it's possible to automatically trigger a search.
+            // easiest if only one type of search is used in the app...
+            // handleFindRouteBFS();
+            // handleFindRouteDFS();
+            // etc...
+        }
     }
+
     @FXML
-    public void bfsSearch(ActionEvent actionEvent) {
+    private void handleRemoveWaypoint() {
+        int selectedIndex = waypointsListView.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            waypoints.remove(selectedIndex);
+        }
+        // Add visual reminder to recalculate route!
+        waypointStatusLabel.setText("Press Search to recalculate");
+        waypointStatusLabel.setStyle("-fx-text-fill: #FF0000; -fx-font-weight: bold;");
+
+
     }
-    @FXML
-    public void removeWaypoint(ActionEvent actionEvent) {
-    }
+
 
     private Graph graph;  // The graph instance
 
@@ -158,8 +160,8 @@ public class Controller {
 
         System.out.println("Initializing Controller...");
 
-        colorMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubhan/images/UBhan_Map_1.jpg"));
-        greyMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubhan/images/UBhan_Map_1_Grey.jpg"));
+        colorMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubhan/images/UBahn_Map_1.jpg"));
+        greyMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubhan/images/UBahn_Map_1_Grey.jpg"));
 
 
         // Create and initialize the graph
@@ -168,7 +170,7 @@ public class Controller {
         // Load data from CSV
         graph.loadFromCSV("/com/michaelmckibbin/viennaubhan/data/vienna_subway_list_1.csv");
 
-        // Populate ComboBoxes with station names
+        // Populate Start Station, End Station & Waypoints ComboBoxes with station names
         populateStationComboBoxes();
 
         // Add listeners for station selection
@@ -197,6 +199,65 @@ public class Controller {
         routeLayer.prefWidthProperty().bind(mapImageView.fitWidthProperty());
         routeLayer.prefHeightProperty().bind(mapImageView.fitHeightProperty());
 
+        // Initialize waypoints ListView
+        waypointsListView.setItems(waypoints);
+
+        // Set up cell factory for waypoints ListView to show station names
+        waypointsListView.setCellFactory(listView -> new ListCell<Station>() {
+                    @Override
+                    protected void updateItem(Station station, boolean empty) {
+                        super.updateItem(station, empty);
+                        if (empty || station == null) {
+                            setText(null);
+                        } else {
+                            setText(station.getName() + " " + station.getLineName());
+                        }
+                    }
+                });
+
+        // Set string converter for waypointComboBox
+        waypointComboBox.setConverter(new StringConverter<Station>() {
+            @Override
+            public String toString(Station station) {
+                return station == null ? "" : station.getName() + " " + station.getLineName();
+            }
+
+            @Override
+            public Station fromString(String string) {
+                return null; // Not needed for this use case
+            }
+        });
+
+        // Optional: If you also want to style the dropdown items
+        waypointComboBox.setCellFactory(lv -> new ListCell<Station>() {
+            @Override
+            protected void updateItem(Station station, boolean empty) {
+                super.updateItem(station, empty);
+                if (empty || station == null) {
+                    setText(null);
+                } else {
+                    setText(station.getName() + " " + station.getLineName());
+                }
+            }
+        });
+
+        // Set up button cell (what shows when an item is selected)
+        waypointComboBox.setButtonCell(new ListCell<Station>() {
+            @Override
+            protected void updateItem(Station station, boolean empty) {
+                super.updateItem(station, empty);
+                if (empty || station == null) {
+                    setText(null);
+                } else {
+                    setText(station.getName() + " " + station.getLineName());
+                }
+            }
+        });
+
+        // Enable/disable remove button based on selection
+        removeWaypointButton.disableProperty().bind(
+                waypointsListView.getSelectionModel().selectedItemProperty().isNull()
+        );
 
         System.out.println("\nController initialization complete.");
 
@@ -210,6 +271,7 @@ public class Controller {
         // Add stations to ComboBoxes
         startStationComboBox.getItems().addAll(stations);
         endStationComboBox.getItems().addAll(stations);
+        waypointComboBox.getItems().addAll(stations);
 
         // Set cell factory to display station names
         setCellFactory(startStationComboBox);
@@ -390,8 +452,31 @@ public class Controller {
             }
     }
 
+
+    // Search methods
+//    @FXML
+//private void handleFindRouteBFS() {
+//    Station startStation = startStationComboBox.getValue();
+//    Station endStation = endStationComboBox.getValue();
+//
+//    if (startStation == null || endStation == null) {
+//        showAlert("Please select both start and end stations.");
+//        return;
+//    }
+//
+//    Path path = graph.bfsAlgorithm(startStation, endStation);
+//
+//    if (path != null) {
+//        displayRoute(path);
+//        displayPerformanceMetrics(path);
+//        drawRoute(path);
+//    } else {
+//        showAlert("No route found between selected stations.");
+//    }
+//}
+
     @FXML
-private void findRouteBfs() {
+private void handleFindRouteBFS() {
     Station startStation = startStationComboBox.getValue();
     Station endStation = endStationComboBox.getValue();
 
@@ -400,16 +485,61 @@ private void findRouteBfs() {
         return;
     }
 
-    Path path = graph.bfsAlgorithm(startStation, endStation);
+    // Create a list of all points in order: start -> waypoints -> end
+    List<Station> routePoints = new ArrayList<>();
+    routePoints.add(startStation);
+    routePoints.addAll(waypoints);
+    routePoints.add(endStation);
 
-    if (path != null) {
-        displayRoute(path);
-        displayPerformanceMetrics(path);
-        drawRoute(path);
-    } else {
-        showAlert("No route found between selected stations.");
+    // Find paths between consecutive points and combine them
+    Path completePath = null;
+
+    try {
+        // Start with first segment
+        completePath = graph.bfsAlgorithm(routePoints.get(0), routePoints.get(1));
+
+        // For each additional waypoint, find path and combine
+        for (int i = 1; i < routePoints.size() - 1; i++) {
+            Path nextSegment = graph.bfsAlgorithm(routePoints.get(i), routePoints.get(i + 1));
+            if (nextSegment == null) {
+                showAlert("No route found between " + routePoints.get(i).getName() +
+                         " and " + routePoints.get(i + 1).getName());
+                return;
+            }
+            // Remove duplicate station at connection point and combine paths
+            nextSegment.getStations().remove(0); // Remove first station of next segment
+            completePath.getStations().addAll(nextSegment.getStations());
+            completePath.setNumberOfStops(completePath.getNumberOfStops() +
+                                        nextSegment.getNumberOfStops());
+        }
+
+        if (completePath != null) {
+            displayRoute(completePath);
+            displayPerformanceMetrics(completePath);
+            drawRoute(completePath);
+        } else {
+            showAlert("No route found between selected stations.");
+        }
+    } catch (Exception e) {
+        showAlert("Error finding route: " + e.getMessage());
     }
+
+        // After the route is found, clear the waypointStatusLabel text
+        waypointStatusLabel.setText("");
+        waypointStatusLabel.setStyle("");
 }
+
+
+
+    @FXML
+    public void handleFindRouteDFS(ActionEvent actionEvent) {
+    }
+    @FXML
+    public void handleDijkstraWithPenalties(ActionEvent actionEvent) {
+    }
+    @FXML
+    public void handleDijkstraShortestPath(ActionEvent actionEvent) {
+    }
 
     // Add method to scale coordinates to match the image size
     private double scaleX(double x) {
@@ -448,24 +578,6 @@ private void displayPerformanceMetrics(Path path) {
     performanceLabel.setText(performanceInfo);
     performanceBox.setVisible(true);
 }
-
-
-
-//    private void displayRoute(Path path) {
-//        // Clear previous route
-//        routeListView.getItems().clear();
-//
-//        // Add stations to the list view
-//        path.getStations().forEach(station ->
-//                routeListView.getItems().add(station.getName())
-//        );
-//
-//        // Update number of stops
-//        numberOfStopsLabel.setText("Total stops: " + path.getNumberOfStops());
-//
-//        // Show route info
-//        routeInfoBox.setVisible(true);
-//    }
 
     private void displayRoute(Path path) {
     // Clear previous route
@@ -512,4 +624,8 @@ private void displayPerformanceMetrics(Path path) {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
+
+
 }

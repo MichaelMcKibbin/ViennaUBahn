@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.geometry.Rectangle2D?>
-<AnchorPane prefHeight="700.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.michaelmckibbin.viennaubhan.Controller">
+<AnchorPane prefHeight="700.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.michaelmckibbin.viennaubahn.Controller">
     <BorderPane prefHeight="730.0" prefWidth="1400.0">
 <top>
     <HBox alignment="CENTER" minHeight="40" prefHeight="40.0" prefWidth="1400.0">
@@ -15,36 +14,38 @@
 </top>
 
         <left>
-            <HBox minWidth="150" maxWidth="250" prefWidth="200">
-
                 <!-- Station Selection Controls -->
                 <VBox>
 
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <ComboBox fx:id="startStationComboBox" prefWidth="200" promptText="Select start station" />
-                </HBox>
+                    <ComboBox fx:id="startStationComboBox" prefWidth="150" promptText="Select start station" />
+                    <ComboBox fx:id="endStationComboBox" prefWidth="150" promptText="Select end station" />
 
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <ComboBox fx:id="endStationComboBox" prefWidth="200" promptText="Select end station" />
-                </HBox>
+                <!-- Waypoints section -->
+
+                    <Label text="Waypoints:" />
+                    <ComboBox fx:id="waypointComboBox" prefWidth="150" promptText="Choose waypoint" />
+                    <Button fx:id="addWaypointButton" prefWidth="150" onAction="#handleAddWaypoint" text="Add waypoint" />
+                    <ListView fx:id="waypointsListView" prefHeight="150" prefWidth="150" />
+                    <Button fx:id="removeWaypointButton" prefWidth="150" onAction="#handleRemoveWaypoint" text="Remove Selected" />
+                    <Label fx:id="waypointStatusLabel" />
 
                 <!-- Find Route Button -->
                 <Label text="Find Route Method Choices" />
-                <Button fx:id="dfsButton" mnemonicParsing="false" onAction="#dfsSearch" prefHeight="45.0" prefWidth="160.0" text="Depth First Search" />
-                <Button fx:id="bfsButton" mnemonicParsing="false" onAction="#findRouteBfs" prefHeight="45.0" prefWidth="160.0" text="Breath First Search" />
+                <Button fx:id="dfsButton" mnemonicParsing="false" onAction="#handleFindRouteDFS" prefHeight="45.0" prefWidth="160.0" text="Depth First Search" />
+                <Button fx:id="bfsButton" mnemonicParsing="false" onAction="#handleFindRouteBFS" prefHeight="45.0" prefWidth="160.0" text="Breath First Search" />
                 <Button fx:id="dijkstraWithPenalties" mnemonicParsing="false" onAction="#handleDijkstraWithPenalties" prefHeight="45.0" prefWidth="160.0" text="Dijkstras (With Change Penalties)" />
                 <Button fx:id="dijkstraShortestPath" mnemonicParsing="false" onAction="#handleDijkstraShortestPath" prefHeight="45.0" prefWidth="160.0" text="Dijkstras (Shortest Path)" />
                 </VBox>
-            </HBox>
+
         </left>
 <center>
     <StackPane fx:id="mapContainer">
-        <ImageView fx:id="mapImageView" preserveRatio="true" >
+        <ImageView fx:id="mapImageView" preserveRatio="true">
             <viewport>
                 <Rectangle2D />
             </viewport>
             <image>
-                <Image url="@../images/UBhan_Map_1.jpg" />
+                <Image url="@../images/UBahn_Map_1.jpg" />
             </image>
             <StackPane.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -54,7 +55,7 @@
 </center>
 
 <right>
-    <VBox prefWidth="200" maxWidth="250" spacing="10">
+    <VBox maxWidth="250" prefWidth="200" spacing="10">
         <!-- Route Information -->
         <VBox fx:id="routeInfoBox" spacing="5" visible="false">
             <Label style="-fx-font-weight: bold" text="Route:" />
@@ -72,23 +73,9 @@
 
 
         <bottom>
-            <HBox minHeight="50" maxHeight="200" prefHeight="150">
+            <HBox maxHeight="200" minHeight="50" prefHeight="150">
                 <VBox spacing="5">
                     <ListView fx:id="avoidListview" prefHeight="50.0" prefWidth="246.0" />
-                </VBox>
-
-
-
-                <!-- Waypoints section -->
-                <VBox spacing="5">
-                    <Label text="Waypoints:" />
-                    <HBox spacing="10">
-                        <ComboBox fx:id="waypointComboBox" prefWidth="200" promptText="Add waypoint" />
-                        <Button fx:id="addWaypointButton" text="Add" onAction="#handleAddWaypoint" />
-                    </HBox>
-                    <ListView fx:id="waypointsListView" prefHeight="150" prefWidth="200" />
-                    <Button fx:id="removeWaypointButton" text="Remove Selected Waypoint"
-                            onAction="#handleRemoveWaypoint" />
                 </VBox>
 
             </HBox>

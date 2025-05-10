@@ -1,4 +1,4 @@
-package com.michaelmckibbin.viennaubhan;
+package com.michaelmckibbin.viennaubahn;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

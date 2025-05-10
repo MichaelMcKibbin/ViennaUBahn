@@ -1,4 +1,4 @@
-package com.michaelmckibbin.viennaubhan;
+package com.michaelmckibbin.viennaubahn;
 
 import java.util.*;
 
@@ -8,6 +8,7 @@ public class Path {
     private final long executionTimeNanos;
     private final int nodesVisited;
     private final int maxQueueSize;
+    private int numberOfStops;
 
     // Constructor
     public Path(List<Station> stations, long executionTimeNanos, int nodesVisited, int maxQueueSize) {
@@ -16,6 +17,16 @@ public class Path {
         this.nodesVisited = nodesVisited;
         this.maxQueueSize = maxQueueSize;
     }
+
+    public void addStation(Station station) {
+        stations.add(station);
+        numberOfStops++;
+    }
+
+    public void setNumberOfStops(int stops) {
+        this.numberOfStops = stops;
+    }
+
 
     // Getters
     public List<Station> getStations() {

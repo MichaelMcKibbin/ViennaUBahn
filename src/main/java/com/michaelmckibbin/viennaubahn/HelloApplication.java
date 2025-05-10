@@ -1,4 +1,4 @@
-package com.michaelmckibbin.viennaubhan;
+package com.michaelmckibbin.viennaubahn;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
