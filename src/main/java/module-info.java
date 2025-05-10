@@ -1,4 +1,4 @@
-module com.michaelmckibbin.viennaubhan {
+module com.michaelmckibbin.viennaubahn {
     requires javafx.controls;
     requires javafx.fxml;
 

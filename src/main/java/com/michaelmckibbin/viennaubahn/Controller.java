@@ -160,15 +160,15 @@ public class Controller {
 
         System.out.println("Initializing Controller...");
 
-        colorMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubhan/images/UBahn_Map_1.jpg"));
-        greyMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubhan/images/UBahn_Map_1_Grey.jpg"));
+        colorMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubahn/images/UBahn_Map_1.jpg"));
+        greyMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubahn/images/UBahn_Map_1_Grey.jpg"));
 
 
         // Create and initialize the graph
         graph = new Graph();
 
         // Load data from CSV
-        graph.loadFromCSV("/com/michaelmckibbin/viennaubhan/data/vienna_subway_list_1.csv");
+        graph.loadFromCSV("/com/michaelmckibbin/viennaubahn/data/vienna_subway_list_1.csv");
 
         // Populate Start Station, End Station & Waypoints ComboBoxes with station names
         populateStationComboBoxes();
