@@ -74,28 +74,23 @@
         <bottom>
             <HBox minHeight="50" maxHeight="200" prefHeight="150">
                 <VBox spacing="5">
-                    <MenuButton fx:id="avoidStation" mnemonicParsing="false" text="Avoid a Station" />
                     <ListView fx:id="avoidListview" prefHeight="50.0" prefWidth="246.0" />
-                    <HBox spacing="5">
-                        <Button fx:id="addAvoidStationButton" mnemonicParsing="false" onAction="#handleAddAvoidStation" text="Add to avoid list" />
-                        <Button fx:id="removeAvoidStationButton" mnemonicParsing="false" onAction="#handleRemoveAvoidStation" text="Remove from avoid list" />
-                    </HBox>
                 </VBox>
 
 
 
-                <!-- Waypoints Section -->
-                <VBox prefHeight="150.0" prefWidth="250.0" spacing="5">
-                    <MenuButton fx:id="waypointStation" mnemonicParsing="false" text="Waypoints" />
-                    <HBox spacing="5">
-                        <Button fx:id="addWaypointButton" mnemonicParsing="false" onAction="#handleAddWaypoint" text="Add Waypoint" />
-                        <Button fx:id="removeWaypointButton" mnemonicParsing="false" onAction="#removeWaypoint" text="Remove Waypoint" />
+                <!-- Waypoints section -->
+                <VBox spacing="5">
+                    <Label text="Waypoints:" />
+                    <HBox spacing="10">
+                        <ComboBox fx:id="waypointComboBox" prefWidth="200" promptText="Add waypoint" />
+                        <Button fx:id="addWaypointButton" text="Add" onAction="#handleAddWaypoint" />
                     </HBox>
-                    <ListView fx:id="waypointListview" prefHeight="50.0" prefWidth="250.0" />
+                    <ListView fx:id="waypointsListView" prefHeight="150" prefWidth="200" />
+                    <Button fx:id="removeWaypointButton" text="Remove Selected Waypoint"
+                            onAction="#handleRemoveWaypoint" />
                 </VBox>
-               <VBox prefHeight="200.0" prefWidth="304.0">
-                   <HBox alignment="CENTER" prefHeight="60.0" prefWidth="304.0" />
-               </VBox>
+
             </HBox>
         </bottom>
     </BorderPane>
