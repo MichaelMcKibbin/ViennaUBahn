@@ -673,7 +673,7 @@ public class Controller {
             routeInfoBox.setVisible(false);
         }
 
-        // Redraw the color map
+        // Display the color map
         setColorMap();
     }
 
