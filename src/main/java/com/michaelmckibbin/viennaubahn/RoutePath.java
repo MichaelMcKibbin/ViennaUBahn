@@ -2,8 +2,8 @@ package com.michaelmckibbin.viennaubahn;
 
 import java.util.*;
 
-// Path class to represent a route between stations
-public class Path {
+// RoutePath class to represent a route between stations
+public class RoutePath {
     private final List<Station> stations;
     private final long executionTimeNanos;
     private final int nodesVisited;
@@ -11,7 +11,7 @@ public class Path {
     private int numberOfStops;
 
     // Constructor
-    public Path(List<Station> stations, long executionTimeNanos, int nodesVisited, int maxQueueSize) {
+    public RoutePath(List<Station> stations, long executionTimeNanos, int nodesVisited, int maxQueueSize) {
         this.stations = stations;
         this.executionTimeNanos = executionTimeNanos;
         this.nodesVisited = nodesVisited;
@@ -48,4 +48,6 @@ public class Path {
     public int getNumberOfStops() {
         return stations.size() - 1;
     }
+
+
 }

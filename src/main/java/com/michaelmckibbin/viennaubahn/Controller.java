@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -11,9 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.*;
 import javafx.util.StringConverter;
 
 import java.util.*;
@@ -22,6 +21,11 @@ import java.util.stream.Collectors;
 
 public class Controller {
 
+    @FXML private Canvas routeCanvas;
+    @FXML private Label stopsLabel;
+    @FXML private Label timeLabel;
+    @FXML private Label nodesLabel;
+    @FXML private Label queueLabel;
 
     public Button resetButton;
     @FXML
@@ -29,6 +33,11 @@ public class Controller {
     private Pane routeLayer; // Layer for drawing routes
     private Image colorMap;
     private Image greyMap;
+
+
+    private RouteVisualizer routeVisualizer;
+    private RouteMetricsDisplay metricsDisplay;
+    private RouteSearchStrategy routeFinder;
 
 
     // Waypoints
@@ -76,34 +85,7 @@ public class Controller {
     @FXML
     public ImageView mapImageView;
 
-    // Original image dimensions
-    private static final double ORIGINAL_WIDTH = 1488.0;
-    private static final double ORIGINAL_HEIGHT = 993.0;
-    private static final double FIT_WIDTH = 1000; // 800 = 181, 900 = 81, 1000 = 11
-    private static final double X_OFFSET = 10.0; // Adjust as needed
-    // experimenting with formulaic derivation of X_OFFSET based on relationship between known FIT_WIDTH and required X_OFFSET
-    //private static final double X_OFFSET = Math.max(0, (ORIGINAL_WIDTH - FIT_WIDTH) * 0.2619);
-    //private static final double X_OFFSET = (ORIGINAL_WIDTH - FIT_WIDTH) * 0.262;
-    private static final double Y_OFFSET = 4.0;
 
-    // line stroke width setting
-    private static final double LINE_STROKE_WIDTH = 8.0;
-
-    // Constants for marker sizes
-    private static final double START_STATION_MARKER_SIZE = 9;
-    private static final double INTERMEDIATE_STATION_MARKER_SIZE = 4;
-    private static final double END_STATION_MARKER_SIZE = 9.0;
-    private static final double LINE_CHANGE_STATION_MARKER_SIZE = 7;
-    private static final double WAYPOINT_STATION_MARKER_SIZE = 8.0;
-    private static final double AVOID_MARKER_SIZE = 4.0;
-
-    // Constants for marker colors
-    private static final Color START_STATION_FILL_COLOR = Color.PALEVIOLETRED;
-    private static final Color END_STATION_FILL_COLOR = Color.LIMEGREEN;
-    private static final Color LINE_CHANGE_STATION_FILL_COLOR = Color.YELLOW;
-    private static final Color INTERMEDIATE_STATION_FILL_COLOR = Color.LAWNGREEN;
-    private static final Color WAYPOINT_STATION_FILL_COLOR = Color.INDIGO;
-    private static final Color STATION_STROKE_COLOR = Color.BLACK;
 
 
     // Performance stats
@@ -163,120 +145,63 @@ public class Controller {
 
     private Graph graph;  // The graph instance
 
-    @FXML
-    public void initialize() {
 
-        System.out.println("Initializing Controller...");
+@FXML
+public void initialize() {
+    System.out.println("Initializing Controller...");
 
-        colorMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubahn/images/UBahn_Map_1.jpg"));
-        greyMap = new Image(getClass().getResourceAsStream("/com/michaelmckibbin/viennaubahn/images/UBahn_Map_1_Grey.jpg"));
+    // Load images
+    colorMap = new Image(getClass().getResourceAsStream(
+        "/com/michaelmckibbin/viennaubahn/images/UBahn_Map_1.jpg"));
+    greyMap = new Image(getClass().getResourceAsStream(
+        "/com/michaelmckibbin/viennaubahn/images/UBahn_Map_1_Grey.jpg"));
 
+    // Initialize map components
+    MapInitializer mapInit = new MapInitializer(mapImageView, mapContainer,
+                                               ORIGINAL_WIDTH, ORIGINAL_HEIGHT,
+                                               FIT_WIDTH);
+    mapInit.initialize();
+    routeLayer = mapInit.getRouteLayer();
 
-        // Create and initialize the graph
-        graph = new Graph();
-
-        // Load data from CSV
-        graph.loadFromCSV("/com/michaelmckibbin/viennaubahn/data/vienna_subway_list_1.csv");
-
-        // Populate ComboBoxes with station names
-        populateStationComboBoxes();
-
-        // Add listeners for station selection
-        startStationComboBox.setOnAction(e -> validateSelections());
-        endStationComboBox.setOnAction(e -> validateSelections());
-
-        // Print debug information
-        // add more detail if needed, like the number of stations, connections, etc.
-        graph.printGraphStructure();
-        graph.printTransferStations();
-
-        // Initialize the route layer
-        routeLayer = new Pane();
-        routeLayer.setMouseTransparent(true); // Let clicks pass through to map
-
-        // Set initial size for ImageView
-        mapImageView.setFitWidth(FIT_WIDTH);  // or whatever width fits the window
-        mapImageView.setFitHeight(mapImageView.getFitWidth() * (ORIGINAL_HEIGHT/ORIGINAL_WIDTH));
-        mapImageView.setPreserveRatio(true);
-
-        // Make sure routeLayer is added after ImageView
-        mapContainer.getChildren().clear();
-        mapContainer.getChildren().addAll(mapImageView, routeLayer);
-
-        // Bind routeLayer size to ImageView
-        routeLayer.prefWidthProperty().bind(mapImageView.fitWidthProperty());
-        routeLayer.prefHeightProperty().bind(mapImageView.fitHeightProperty());
-
-        // Initialize waypoints ListView
-        waypointsListView.setItems(waypoints);
-
-        // Set up cell factory for waypoints ListView to show station names
-        waypointsListView.setCellFactory(listView -> new ListCell<Station>() {
-                    @Override
-                    protected void updateItem(Station station, boolean empty) {
-                        super.updateItem(station, empty);
-                        if (empty || station == null) {
-                            setText(null);
-                        } else {
-                            setText(station.getName() + " " + station.getLineName());
-                        }
-                    }
-                });
-
-        // Set string converter for waypointComboBox
-        waypointComboBox.setConverter(new StringConverter<Station>() {
-            @Override
-            public String toString(Station station) {
-                return station == null ? "" : station.getName() + " " + station.getLineName();
-            }
-
-            @Override
-            public Station fromString(String string) {
-                return null; // Not needed for this use case
-            }
-        });
-
-        // Optional: If you also want to style the dropdown items
-        waypointComboBox.setCellFactory(lv -> new ListCell<Station>() {
-            @Override
-            protected void updateItem(Station station, boolean empty) {
-                super.updateItem(station, empty);
-                if (empty || station == null) {
-                    setText(null);
-                } else {
-                    setText(station.getName() + " " + station.getLineName());
-                }
-            }
-        });
-
-        // Set up button cell (what shows when an item is selected)
-        waypointComboBox.setButtonCell(new ListCell<Station>() {
-            @Override
-            protected void updateItem(Station station, boolean empty) {
-                super.updateItem(station, empty);
-                if (empty || station == null) {
-                    setText(null);
-                } else {
-                    setText(station.getName() + " " + station.getLineName());
-                }
-            }
-        });
-
-        // Enable/disable remove button based on selection
-        removeWaypointButton.disableProperty().bind(
-                waypointsListView.getSelectionModel().selectedItemProperty().isNull()
-        );
+    // Set up canvas and route visualizer
+    routeCanvas.widthProperty().bind(mapContainer.widthProperty());
+    routeCanvas.heightProperty().bind(mapContainer.heightProperty());
+    routeVisualizer = new RouteVisualizer(mapImageView, routeLayer, waypoints);
+}
 
 
-//        // Initialize avoidStations ListView
-//        avoidStationsListView.setItems(avoidStations);
+
+    // Initialize graph
+    graph = new Graph();
+    graph.loadFromCSV("/com/michaelmckibbin/viennaubahn/data/vienna_subway_list_1.csv");
+    graph.printGraphStructure();
+    graph.printTransferStations();
+
+    // Initialize route finding components
+    metricsDisplay = new RouteMetricsDisplay(stopsLabel, timeLabel,
+                                           nodesLabel, queueLabel);
+    routeFinder = new BFSRouteFinder(graph);
+
+    // Initialize station selection components
+    populateStationComboBoxes();
+    startStationComboBox.setOnAction(e -> validateSelections());
+    endStationComboBox.setOnAction(e -> validateSelections());
+
+    // Initialize waypoint management
+    StationListManager stationManager = new StationListManager(
+        waypointComboBox,
+        waypointsListView,
+        waypoints,
+        removeWaypointButton
+    );
+    stationManager.initialize();
+
+    System.out.println("\nController initialization complete.");
+}
 
 
 
 
-        System.out.println("\nController initialization complete.");
-
-    }
 
     private void populateStationComboBoxes() {
         // Get all stations and sort them by name
@@ -371,190 +296,100 @@ public class Controller {
         mapImageView.setImage(colorMap);
     }
 
-    private void drawRoute(Path path) {
-
-        // Switch to grey map
-        setGreyMap();
-
-        routeLayer.getChildren().clear();
-        List<Station> stations = path.getStations();
-
-        for (int i = 0; i < stations.size() - 1; i++) {
-            Station current = stations.get(i);
-            Station next = stations.get(i + 1);
-
-            // Scale coordinates and apply X offset
-            int startX = (int) Math.round(((current.getX() + X_OFFSET) / ORIGINAL_WIDTH) * mapImageView.getFitWidth());
-            int startY = (int) Math.round((current.getY() / ORIGINAL_HEIGHT) * mapImageView.getFitHeight() + Y_OFFSET);
-            int endX = (int) Math.round(((next.getX() + X_OFFSET) / ORIGINAL_WIDTH) * mapImageView.getFitWidth());
-            int endY = (int) Math.round((next.getY() / ORIGINAL_HEIGHT) * mapImageView.getFitHeight() + Y_OFFSET);
-
-            // Then add Y_OFFSET to the scaled coordinates
-            startY += Y_OFFSET;
-            endY += Y_OFFSET;
-
-            // Debug output
-            System.out.println("Drawing line from (" + startX + "," + startY +
-                    ") to (" + endX + "," + endY + ")");
-
-            Line line = new Line(startX, startY, endX, endY);
-            // Use the enum to set the color
-
-//            try {
-//                line.setStroke(LineColor.valueOf(current.getLineColor().toUpperCase()).getColor());
-//            } catch (IllegalArgumentException e) {
-//                // Fallback color if the line color isn't found in the enum
-//                line.setStroke(Color.BLACK);
-//                System.out.println("Unknown line color: " + current.getLineColor());
-//            }
-
-            // Use the next station's line color instead of the current station's
-            try {
-                line.setStroke(LineColor.valueOf(next.getLineColor().toUpperCase()).getColor());
-            } catch (IllegalArgumentException e) {
-                line.setStroke(Color.BLACK);
-                System.out.println("Unknown line color: " + next.getLineColor());
-            }
-            //line.setStroke(Color.RED);
-            line.setStrokeWidth(LINE_STROKE_WIDTH);
-            line.setStrokeLineCap(StrokeLineCap.ROUND);
-
-            routeLayer.getChildren().add(line);
-        }
-
-        // Draw station markers
-        stations = path.getStations();
-        for (int i = 0; i < stations.size(); i++) {
-            Station station = stations.get(i);
-            int x = (int) Math.round(((station.getX() + X_OFFSET) / ORIGINAL_WIDTH) * mapImageView.getFitWidth());
-            int y = (int) Math.round((station.getY() / ORIGINAL_HEIGHT) * mapImageView.getFitHeight() + Y_OFFSET);
-
-            Circle marker = new Circle(x, y, 0);
-
-            // Check if this is a line change point (but not for the last station)
-            boolean isLineChange = false;
-            if (i < stations.size() - 1) {
-                Station nextStation = stations.get(i + 1);
-                isLineChange = !station.getLineColor().equals(nextStation.getLineColor());
-            }
-            // check if this is a waypoint
-            boolean isWaypoint = waypoints.contains(station);
 
 
 
 
-            // Set different colors and sizes for start and end stations
-            if (i == 0) {  // Start station
-                marker.setRadius(START_STATION_MARKER_SIZE);
-                marker.setFill(START_STATION_FILL_COLOR);
-                marker.setStroke(STATION_STROKE_COLOR);
-                marker.setStrokeWidth(2);
-            } else if (i == stations.size() - 1) {  // End station
-                marker.setRadius(END_STATION_MARKER_SIZE);
-                marker.setFill(END_STATION_FILL_COLOR);
-                marker.setStroke(STATION_STROKE_COLOR);
-                marker.setStrokeWidth(1);
-            } else if (isLineChange) {  // Line change point
-                marker.setRadius(LINE_CHANGE_STATION_MARKER_SIZE); // Using same size as start/end stations
-                marker.setFill(LINE_CHANGE_STATION_FILL_COLOR);
-                marker.setStroke(STATION_STROKE_COLOR);
-                marker.setStrokeWidth(1);
-            }else if (isWaypoint){
-                marker.setRadius(WAYPOINT_STATION_MARKER_SIZE);
-                marker.setFill(WAYPOINT_STATION_FILL_COLOR);
-                marker.setStroke(STATION_STROKE_COLOR);
-                marker.setStrokeWidth(1);
-            } else {  // Intermediate stations
-                marker.setRadius(INTERMEDIATE_STATION_MARKER_SIZE);
-                marker.setFill(INTERMEDIATE_STATION_FILL_COLOR);
-                marker.setStroke(STATION_STROKE_COLOR);
-                marker.setStrokeWidth(1);
-            }
+@FXML
+private void handleFindRouteBFS() {
+    System.out.println("BFS Search initiated..."); // Debug log
 
-            routeLayer.getChildren().add(marker);
+    Station start = startStationComboBox.getValue();
+    Station end = endStationComboBox.getValue();
 
-                System.out.println("Drawing station marker at (" + x + "," + y + ") for " + station.getName() +
-                        (i == 0 ? " (Start)" : (i == stations.size() - 1 ? " (End)" : "")));
-
-            }
-    }
-
-
-    // Search methods
-//    @FXML
-//private void handleFindRouteBFS() {
-//    Station startStation = startStationComboBox.getValue();
-//    Station endStation = endStationComboBox.getValue();
-//
-//    if (startStation == null || endStation == null) {
-//        showAlert("Please select both start and end stations.");
-//        return;
-//    }
-//
-//    Path path = graph.bfsAlgorithm(startStation, endStation);
-//
-//    if (path != null) {
-//        displayRoute(path);
-//        displayPerformanceMetrics(path);
-//        drawRoute(path);
-//    } else {
-//        showAlert("No route found between selected stations.");
-//    }
-//}
-
-    @FXML
-    private void handleFindRouteBFS() {
-    Station startStation = startStationComboBox.getValue();
-    Station endStation = endStationComboBox.getValue();
-
-    if (startStation == null || endStation == null) {
-        showAlert("Please select both start and end stations.");
+    if (start == null || end == null) {
+        System.out.println("Start or end station not selected");
         return;
     }
 
-    // Create a list of all points in order: start -> waypoints -> end
-    List<Station> routePoints = new ArrayList<>();
-    routePoints.add(startStation);
-    routePoints.addAll(waypoints);
-    routePoints.add(endStation);
-
-    // Find paths between consecutive points and combine them
-    Path completePath = null;
-
     try {
-        // Start with first segment
-        completePath = graph.bfsAlgorithm(routePoints.get(0), routePoints.get(1));
 
-        // For each additional waypoint, find path and combine
-        for (int i = 1; i < routePoints.size() - 1; i++) {
-            Path nextSegment = graph.bfsAlgorithm(routePoints.get(i), routePoints.get(i + 1));
-            if (nextSegment == null) {
-                showAlert("No route found between " + routePoints.get(i).getName() +
-                         " and " + routePoints.get(i + 1).getName());
-                return;
-            }
-            // Remove duplicate station at connection point and combine paths
-            nextSegment.getStations().remove(0); // Remove first station of next segment
-            completePath.getStations().addAll(nextSegment.getStations());
-            completePath.setNumberOfStops(completePath.getNumberOfStops() +
-                                        nextSegment.getNumberOfStops());
+        // Switch to grey map
+        mapImageView.setImage(greyMap);
+
+        // Clear previous route
+        routeVisualizer.clearRoute();
+
+        // Make route info visible
+        routeInfoBox.setVisible(true);
+        performanceBox.setVisible(true);
+
+        // Get waypoints
+        List<Station> waypointsList = new ArrayList<>(waypoints);
+
+        System.out.println("Finding route from " + start.getName() + " to " + end.getName());
+        if (!waypointsList.isEmpty()) {
+            System.out.println("With waypoints: " + waypointsList);
         }
 
-        if (completePath != null) {
-            displayRoute(completePath);
-            displayPerformanceMetrics(completePath);
-            drawRoute(completePath);
+        // Find route
+        RoutePath routePath = routeFinder.findRoute(start, end, waypointsList);
+
+        if (routePath != null) {
+
+            // Debug print station coordinates
+            System.out.println("Drawing route with following coordinates:");
+            for (Station station : routePath.getStations()) {
+                System.out.println(station.getName() + " at (" + station.getX() + "," + station.getY() + ")");
+            }
+
+            // Display route on map
+            routeVisualizer.visualizeRoute(routePath.getStations());
+
+            // Update route list
+            routeListView.getItems().clear();
+            routeListView.getItems().addAll(routePath.getStations());
+
+            // Update metrics
+            metricsDisplay.updateMetrics(
+                routePath.getNumberOfStops(),
+                routePath.getExecutionTimeMillis(),
+                routePath.getNodesVisited(),
+                routePath.getMaxQueueSize()
+            );
+
+            System.out.println("Route found successfully!");
         } else {
-            showAlert("No route found between selected stations.");
+            System.out.println("No route found!");
+            mapImageView.setImage(colorMap);  // Switch back to color map if no route found
         }
     } catch (Exception e) {
-        showAlert("Error finding route: " + e.getMessage());
+        System.err.println("Error finding route: " + e.getMessage());
+        e.printStackTrace();
+        mapImageView.setImage(colorMap);  // Switch back to color map on error
+    }
+}
+
+
+    private Path createVisualPath(List<Station> stations) {
+        Path path = new Path();
+        if (stations.isEmpty()) return path;
+
+        Station first = stations.get(0);
+        MoveTo moveTo = new MoveTo(first.getX(), first.getY());
+        path.getElements().add(moveTo);
+
+        for (int i = 1; i < stations.size(); i++) {
+            Station station = stations.get(i);
+            LineTo lineTo = new LineTo(station.getX(), station.getY());
+            path.getElements().add(lineTo);
+        }
+
+        return path;
     }
 
-        // After the route is found, clear the waypointStatusLabel text
-        waypointStatusLabel.setText("");
-        waypointStatusLabel.setStyle("");
-}
+
+
 
 
 
@@ -588,7 +423,7 @@ public class Controller {
     }
 
 
-    private void displayPerformanceMetrics(Path path) {
+    private void displayPerformanceMetrics(RoutePath routePath) {
     // Create performance information string
     String performanceInfo = String.format("""
         Performance Metrics:
@@ -596,22 +431,22 @@ public class Controller {
         • Nodes visited: %d
         • Maximum queue size: %d
         • Number of stops: %d""",
-        path.getExecutionTimeMillis(),
-        path.getNodesVisited(),
-        path.getMaxQueueSize(),
-        path.getNumberOfStops());
+        routePath.getExecutionTimeMillis(),
+        routePath.getNodesVisited(),
+        routePath.getMaxQueueSize(),
+        routePath.getNumberOfStops());
 
     // Update UI
     performanceLabel.setText(performanceInfo);
     performanceBox.setVisible(true);
     }
 
-    private void displayRoute(Path path) {
+    private void displayRoute(RoutePath routePath) {
     // Clear previous route
     routeListView.getItems().clear();
 
     // Add stations to the list view
-    path.getStations().forEach(station ->
+    routePath.getStations().forEach(station ->
             routeListView.getItems().add(station)  // Add the entire station object instead of just the name
     );
 
@@ -637,7 +472,7 @@ public class Controller {
     });
 
     // Update number of stops
-    numberOfStopsLabel.setText("Total stops: " + path.getNumberOfStops());
+    numberOfStopsLabel.setText("Total stops: " + routePath.getNumberOfStops());
 
     // Show route info
     routeInfoBox.setVisible(true);

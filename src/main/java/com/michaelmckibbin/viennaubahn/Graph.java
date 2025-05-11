@@ -86,7 +86,7 @@ public class Graph implements Initializable {
     }
 
     // BFS algorithm with debug output
-    public Path bfsAlgorithm(Station start, Station end) {
+    public RoutePath bfsAlgorithm(Station start, Station end) {
         if (start == null || end == null) {
             return null;
         }
@@ -153,8 +153,8 @@ public class Graph implements Initializable {
     }
 
     // Helper method to build the path from the BFS result
-    private Path buildPath(Map<Station, Station> previous, Station start, Station end,
-                           long executionTimeNanos, int nodesVisited, int maxQueueSize) {
+    private RoutePath buildPath(Map<Station, Station> previous, Station start, Station end,
+                                long executionTimeNanos, int nodesVisited, int maxQueueSize) {
         List<Station> pathStations = new ArrayList<>();
         Station current = end;
 
@@ -164,7 +164,7 @@ public class Graph implements Initializable {
             current = previous.get(current);
         }
 
-        return new Path(pathStations, executionTimeNanos, nodesVisited, maxQueueSize);
+        return new RoutePath(pathStations, executionTimeNanos, nodesVisited, maxQueueSize);
     }
 
     // Debug method to print all loaded stations and their connections
@@ -216,7 +216,7 @@ public class Graph implements Initializable {
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 
             System.out.println("\n=== Loading CSV Data ===");
-            System.out.println("Resource Path: " + resourcePath);
+            System.out.println("Resource RoutePath: " + resourcePath);
 
             String line;
             Station previousStation = null;

@@ -5,6 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.canvas.Canvas?>
 <AnchorPane prefHeight="700.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.michaelmckibbin.viennaubahn.Controller">
     <BorderPane prefHeight="730.0" prefWidth="1400.0">
 <top>
@@ -40,19 +41,21 @@
 
         </left>
 <center>
-    <StackPane fx:id="mapContainer">
-        <ImageView fx:id="mapImageView" preserveRatio="true">
-            <viewport>
-                <Rectangle2D />
-            </viewport>
-            <image>
-                <Image url="@../images/UBahn_Map_1.jpg" />
-            </image>
-            <StackPane.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </StackPane.margin>
-        </ImageView>
-    </StackPane>
+<StackPane fx:id="mapContainer">
+    <ImageView fx:id="mapImageView" preserveRatio="true">
+        <viewport>
+            <Rectangle2D />
+        </viewport>
+        <image>
+            <Image url="@../images/UBahn_Map_1.jpg" />
+        </image>
+        <StackPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+        </StackPane.margin>
+    </ImageView>
+    <Canvas fx:id="routeCanvas" />
+</StackPane>
+
 </center>
 
 <right>
@@ -61,6 +64,13 @@
         <VBox fx:id="routeInfoBox" spacing="5" visible="false">
             <Label style="-fx-font-weight: bold" text="Route:" />
             <ListView fx:id="routeListView" prefHeight="350" />
+
+            <!-- Add these metric labels -->
+            <Label fx:id="stopsLabel" text="Stops: " />
+            <Label fx:id="timeLabel" text="Time: " />
+            <Label fx:id="nodesLabel" text="Nodes Visited: " />
+            <Label fx:id="queueLabel" text="Max Queue Size: " />
+
             <Label fx:id="numberOfStopsLabel" />
         </VBox>
 
@@ -75,20 +85,11 @@
     </VBox>
 </right>
 
-
         <bottom>
             <VBox spacing="5">
                 <HBox spacing="5">
-                <!-- for later use
-                    <ChoiceBox fx:id="avoidStationChoiceBox" />
-                    <Button fx:id="addAvoidStationButton" text="Add" onAction="#handleAddAvoidStation" />
-                 -->
                 </HBox>
-                <!-- for later use
-               <ListView fx:id="avoidStationsListView" />
-               <Button fx:id="removeAvoidStationButton" text="Remove Selected" onAction="#handleRemoveAvoidStation" />
-               -->
-           </VBox>
+            </VBox>
        </bottom>
    </BorderPane>
 </AnchorPane>

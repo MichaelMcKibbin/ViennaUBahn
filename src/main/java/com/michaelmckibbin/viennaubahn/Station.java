@@ -60,4 +60,12 @@ public boolean equals(Object o) {
 public int hashCode() {
     return Objects.hash(getName());
 }
+
+    @Override
+    public String toString() {
+        return stationName + " (" + lineName + ")";  // This will show station name and line name
+        // Or just return stationName if you only want the station name
+    }
 }
+
+
