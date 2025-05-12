@@ -75,7 +75,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.michaelmckibbin.viennaubahn/com.michaelmckibbin.viennaubahn.HelloApplication
+                                com.michaelmckibbin.viennaubahn/com.michaelmckibbin.viennaubahn.MainApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

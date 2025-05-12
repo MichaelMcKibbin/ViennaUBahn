@@ -1,12 +1,19 @@
 package com.michaelmckibbin.viennaubahn;
 
-import java.util.*;
-public class BFSRouteFinder implements RouteFinder {
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class DFS_RecursiveRouteFinder implements RouteFinder {
     private final Graph graph;
     private int nodesVisited;
     private int maxQueueSize;
+    private Set<Station> visited;
+    private List<Station> currentPath;
+    private List<Station> bestPath;
 
-    public BFSRouteFinder(Graph graph) {
+    public DFS_RecursiveRouteFinder(Graph graph) {
         this.graph = graph;
         this.nodesVisited = 0;
         this.maxQueueSize = 0;
@@ -14,7 +21,7 @@ public class BFSRouteFinder implements RouteFinder {
 
     @Override
     public RoutePath findRoute(Station start, Station end, List<Station> waypoints) {
-        System.out.println("Starting BFS route search...");
+        System.out.println("Starting DFS Recursive route search...");
         nodesVisited = 0;
         maxQueueSize = 0;
 
@@ -23,8 +30,7 @@ public class BFSRouteFinder implements RouteFinder {
 
             if (path != null) {
                 System.out.println("Route found with " + path.size() + " stations");
-                return new RoutePath(path, 0,  // passing 0 for timing
-                        nodesVisited, maxQueueSize);
+                return new RoutePath(path, 0, nodesVisited, maxQueueSize);
             }
             System.out.println("No route found");
             return null;
@@ -32,38 +38,6 @@ public class BFSRouteFinder implements RouteFinder {
             System.err.println("Error in route finding: " + e.getMessage());
             return null;
         }
-    }
-
-    private List<Station> findRoute(Station start, Station end) {
-        Queue<List<Station>> queue = new LinkedList<>();
-        Set<Station> visited = new HashSet<>();
-
-        List<Station> initialPath = new ArrayList<>();
-        initialPath.add(start);
-        queue.add(initialPath);
-        visited.add(start);
-
-        while (!queue.isEmpty()) {
-            List<Station> currentPath = queue.poll();
-            Station currentStation = currentPath.get(currentPath.size() - 1);
-
-            nodesVisited++;
-            maxQueueSize = Math.max(maxQueueSize, queue.size());
-
-            if (currentStation.equals(end)) {
-                return currentPath;
-            }
-
-            for (Station neighbor : graph.getNeighbors(currentStation)) {
-                if (!visited.contains(neighbor)) {
-                    visited.add(neighbor);
-                    List<Station> newPath = new ArrayList<>(currentPath);
-                    newPath.add(neighbor);
-                    queue.add(newPath);
-                }
-            }
-        }
-        return null;
     }
 
     private List<Station> findRoutesWithWaypoints(Station start, Station end, List<Station> waypoints) {
@@ -101,7 +75,46 @@ public class BFSRouteFinder implements RouteFinder {
         return completePath;
     }
 
-    // Getters for metrics
+    private List<Station> findRoute(Station start, Station end) {
+        visited = new HashSet<>();
+        currentPath = new ArrayList<>();
+        bestPath = null;
+
+        // Start the recursive DFS
+        dfsRecursive(start, end);
+
+        return bestPath;
+    }
+
+    private void dfsRecursive(Station current, Station end) {
+        nodesVisited++;
+        visited.add(current);
+        currentPath.add(current);
+
+        // Update maxQueueSize (for consistency with other implementations)
+        maxQueueSize = Math.max(maxQueueSize, currentPath.size());
+
+        // If we've found the destination
+        if (current.equals(end)) {
+            // If this is the first valid path found or it's shorter than the current best
+            if (bestPath == null || currentPath.size() < bestPath.size()) {
+                bestPath = new ArrayList<>(currentPath);
+            }
+        } else {
+            // Explore neighbors
+            Set<Station> neighbors = graph.getNeighbors(current);
+            for (Station neighbor : neighbors) {
+                if (!visited.contains(neighbor)) {
+                    dfsRecursive(neighbor, end);
+                }
+            }
+        }
+
+        // Backtrack
+        currentPath.remove(currentPath.size() - 1);
+        visited.remove(current);
+    }
+
     public int getNodesVisited() {
         return nodesVisited;
     }
@@ -110,3 +123,4 @@ public class BFSRouteFinder implements RouteFinder {
         return maxQueueSize;
     }
 }
+

@@ -4,19 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="Added reset. edited maps.">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/BFSRouteFinder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/MapInitializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RouteMetricsDisplay.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RouteSearchStrategy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RouteVisualizer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/StationListManager.java" afterDir="false" />
+    <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="Before DFS.&#10;Moving BFS to separate classes...">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DFS_IterativeRouteFinder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DFS_RecursiveRouteFinder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DijkstraWithPenalties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DijkstrasShortestPath.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RouteFinder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/BFSRouteFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/BFSRouteFinder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Graph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Path.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RoutePath.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Station.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Station.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/HelloApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/HelloController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RouteMetricsDisplay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RouteMetricsDisplay.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RouteVisualizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RouteVisualizer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubahn/views/hello-view.fxml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubahn/views/u-bahn-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubahn/views/u-bahn-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,8 +29,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -82,6 +84,9 @@
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\onedrive personal\OneDrive\Documents\intellijProjects\ViennaUBhan\src\main\resources\com\michaelmckibbin\viennaubhan\views" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.michaelmckibbin.viennaubahn" />
     </key>
   </component>
   <component name="RunManager" selected="Application.com.michaelmckibbin.viennaubahn.MainApplication">
@@ -227,7 +232,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746909430550</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Before DFS.&#10;Moving BFS to separate classes...">
+      <option name="closed" value="true" />
+      <created>1746958592522</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1746958592522</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,6 +257,7 @@
     <MESSAGE value="Fixed spelling BAHN !!&#10;Refactored all misspellings." />
     <MESSAGE value="Fixed spelling BAHN !!&#10;Refactored all misspellings including repo." />
     <MESSAGE value="Added reset. edited maps." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added reset. edited maps." />
+    <MESSAGE value="Before DFS.&#10;Moving BFS to separate classes..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Before DFS.&#10;Moving BFS to separate classes..." />
   </component>
 </project>

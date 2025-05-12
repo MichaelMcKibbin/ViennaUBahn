@@ -33,8 +33,9 @@
 
                 <!-- Find Route Button -->
                 <Label text="Find Route Method Choices" />
-                <Button fx:id="dfsButton" mnemonicParsing="false" onAction="#handleFindRouteDFS" prefHeight="45.0" prefWidth="160.0" text="Depth First Search" />
-                <Button fx:id="bfsButton" mnemonicParsing="false" onAction="#handleFindRouteBFS" prefHeight="45.0" prefWidth="160.0" text="Breath First Search" />
+                <Button fx:id="bfsButton" mnemonicParsing="false" onAction="#handleFindRouteBFS" prefHeight="45.0" prefWidth="160.0" text="Breadth First Search" />
+                <Button fx:id="dfsRecursiveButton" mnemonicParsing="false" onAction="#handleFindRouteDFSRecursive" prefHeight="45.0" prefWidth="160.0" text="DFS Recursive" />
+                <Button fx:id="dfsIterativeButton" mnemonicParsing="false" onAction="#handleFindRouteDFSIterative" prefHeight="45.0" prefWidth="160.0" text="DFS Iterative" />
                 <Button fx:id="dijkstraWithPenalties" mnemonicParsing="false" onAction="#handleDijkstraWithPenalties" prefHeight="45.0" prefWidth="160.0" text="Dijkstras (With Change Penalties)" />
                 <Button fx:id="dijkstraShortestPath" mnemonicParsing="false" onAction="#handleDijkstraShortestPath" prefHeight="45.0" prefWidth="160.0" text="Dijkstras (Shortest Path)" />
                 </VBox>
@@ -59,28 +60,24 @@
 </center>
 
 <right>
-    <VBox maxWidth="250" prefWidth="200" spacing="10">
+    <VBox maxWidth="250" prefWidth="200" spacing="5">
         <!-- Route Information -->
         <VBox fx:id="routeInfoBox" spacing="5" visible="false">
             <Label style="-fx-font-weight: bold" text="Route:" />
-            <ListView fx:id="routeListView" prefHeight="350" />
+            <ListView fx:id="routeListView" prefHeight="400" />
+        </VBox>
 
+        <!-- Performance Metrics -->
+        <VBox fx:id="performanceBox" prefWidth="200" maxHeight="50"  visible="false">
+            <Label style="-fx-font-weight: bold" text="Performance Analysis" />
             <!-- Add these metric labels -->
             <Label fx:id="stopsLabel" text="Stops: " />
             <Label fx:id="timeLabel" text="Time: " />
             <Label fx:id="nodesLabel" text="Nodes Visited: " />
             <Label fx:id="queueLabel" text="Max Queue Size: " />
-
-            <Label fx:id="numberOfStopsLabel" />
-        </VBox>
-
-        <!-- Performance Metrics -->
-        <VBox fx:id="performanceBox" prefWidth="200" spacing="5" visible="false">
-            <Label style="-fx-font-weight: bold" text="Performance Analysis" />
-            <Label fx:id="performanceLabel" wrapText="true" />
         </VBox>
         <VBox>
-            <Button fx:id="resetButton" text="Reset/Clear" onAction="#handleResetMap" />
+            <Button fx:id="resetButton" prefWidth="150" text="Reset/Clear" onAction="#handleResetMap" />
         </VBox>
     </VBox>
 </right>
