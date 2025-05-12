@@ -8,11 +8,11 @@
 <?import javafx.scene.canvas.Canvas?>
 <AnchorPane prefHeight="700.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.michaelmckibbin.viennaubahn.Controller">
     <BorderPane prefHeight="730.0" prefWidth="1400.0">
-<top>
-    <HBox alignment="CENTER" minHeight="40" prefHeight="40.0" prefWidth="1400.0">
-        <Label styleClass="site-title" text="U-Bhan Route Finder" />
-    </HBox>
-</top>
+        <top>
+            <HBox alignment="CENTER" minHeight="40" prefHeight="40.0" prefWidth="1400.0">
+                <Label styleClass="site-title" text="U-Bhan Route Finder" />
+            </HBox>
+        </top>
 
         <left>
                 <!-- Station Selection Controls -->
@@ -31,67 +31,88 @@
                     <Button fx:id="removeWaypointButton" prefWidth="150" onAction="#handleRemoveWaypoint" text="Remove Selected" />
                     <Label fx:id="waypointStatusLabel" />
 
-                <!-- Find Route Button -->
-                <Label text="Find Route Method Choices" />
-                <Button fx:id="bfsButton" mnemonicParsing="false" onAction="#handleFindRouteBFS" prefHeight="45.0" prefWidth="160.0" text="Breadth First Search" />
-                <Button fx:id="dfsRecursiveButton" mnemonicParsing="false" onAction="#handleFindRouteDFSRecursive" prefHeight="45.0" prefWidth="160.0" text="DFS Recursive" />
-                <Button fx:id="dfsIterativeButton" mnemonicParsing="false" onAction="#handleFindRouteDFSIterative" prefHeight="45.0" prefWidth="160.0" text="DFS Iterative" />
-                <Button fx:id="dijkstraWithPenalties" mnemonicParsing="false" onAction="#handleDijkstraWithPenalties" prefHeight="45.0" prefWidth="160.0" text="Dijkstras (With Change Penalties)" />
-                <Button fx:id="dijkstraShortestPath" mnemonicParsing="false" onAction="#handleDijkstraShortestPath" prefHeight="45.0" prefWidth="160.0" text="Dijkstras (Shortest Path)" />
+                    <!-- Find Route Button -->
+                    <Label text="Find Route Method Choices" />
+                    <Button fx:id="bfsButton" mnemonicParsing="false" onAction="#handleFindRouteBFS" prefHeight="45.0" prefWidth="160.0" text="Breadth First Search" />
+                    <Button fx:id="dfsRecursiveButton" mnemonicParsing="false" onAction="#handleFindRouteDFSRecursive" prefHeight="45.0" prefWidth="160.0" text="DFS Recursive" />
+                    <Button fx:id="dfsIterativeButton" mnemonicParsing="false" onAction="#handleFindRouteDFSIterative" prefHeight="45.0" prefWidth="160.0" text="DFS Iterative" />
+                    <Button fx:id="dijkstraWithPenalties" mnemonicParsing="false" onAction="#handleDijkstraWithPenalties" prefHeight="45.0" prefWidth="160.0" text="Dijkstras (With Change Penalties)" />
+                    <Button fx:id="dijkstraShortestPath" mnemonicParsing="false" onAction="#handleDijkstraShortestPath" prefHeight="45.0" prefWidth="160.0" text="Dijkstras (Shortest Path)" />
+                </VBox>
+        </left>
+        <center>
+            <StackPane fx:id="mapContainer">
+                <ImageView fx:id="mapImageView" preserveRatio="true">
+                    <viewport>
+                        <Rectangle2D />
+                    </viewport>
+                    <image>
+                        <Image url="@../images/UBahn_Map_1.jpg" />
+                    </image>
+                    <StackPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </StackPane.margin>
+                </ImageView>
+                <Canvas fx:id="routeCanvas" />
+            </StackPane>
+        </center>
+
+        <right>
+            <VBox maxWidth="250" prefWidth="200" spacing="5">
+                <!-- Route Information -->
+                <VBox fx:id="routeInfoBox" spacing="5" visible="false">
+                    <Label style="-fx-font-weight: bold" text="Route:" />
+                    <ListView fx:id="routeListView" prefHeight="400" />
                 </VBox>
 
-        </left>
-<center>
-<StackPane fx:id="mapContainer">
-    <ImageView fx:id="mapImageView" preserveRatio="true">
-        <viewport>
-            <Rectangle2D />
-        </viewport>
-        <image>
-            <Image url="@../images/UBahn_Map_1.jpg" />
-        </image>
-        <StackPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-        </StackPane.margin>
-    </ImageView>
-    <Canvas fx:id="routeCanvas" />
-</StackPane>
-
-</center>
-
-<right>
-    <VBox maxWidth="250" prefWidth="200" spacing="5">
-        <!-- Route Information -->
-        <VBox fx:id="routeInfoBox" spacing="5" visible="false">
-            <Label style="-fx-font-weight: bold" text="Route:" />
-            <ListView fx:id="routeListView" prefHeight="400" />
-        </VBox>
-
-        <!-- Performance Metrics -->
-        <VBox fx:id="performanceBox" prefWidth="200" maxHeight="50"  visible="false">
-            <Label style="-fx-font-weight: bold" text="Performance Analysis" />
-            <!-- Add these metric labels -->
-            <Label fx:id="stopsLabel" text="Stops: " />
-            <Label fx:id="timeLabel" text="Time: " />
-            <Label fx:id="nodesLabel" text="Nodes Visited: " />
-            <Label fx:id="queueLabel" text="Max Queue Size: " />
-        </VBox>
-        <VBox>
-            <Button fx:id="resetButton" prefWidth="150" text="Reset/Clear" onAction="#handleResetMap" />
-        </VBox>
-    </VBox>
-</right>
+                <!-- Performance Metrics -->
+                <VBox fx:id="performanceBox" prefWidth="200" maxHeight="50"  visible="false">
+                    <Label style="-fx-font-weight: bold" text="Performance Analysis" />
+                    <!-- Add these metric labels -->
+                    <Label fx:id="stopsLabel" text="Stops: " />
+                    <Label fx:id="timeLabel" text="Time: " />
+                    <Label fx:id="nodesLabel" text="Nodes Visited: " />
+                    <Label fx:id="queueLabel" text="Max Queue Size: " />
+                </VBox>
+                <VBox>
+                    <Button fx:id="resetButton" prefWidth="150" text="Reset/Clear" onAction="#handleResetMap" />
+                </VBox>
+            </VBox>
+        </right>
 
         <bottom>
             <VBox spacing="5">
-                <HBox spacing="10" alignment="CENTER">
-                    <Button fx:id="previousRouteButton" text="Previous Route"
-                            onAction="#handlePreviousRoute" disable="true"/>
-                    <Label fx:id="routeNumberLabel" text="Route 1 of 1"/>
-                    <Button fx:id="nextRouteButton" text="Next Route"
-                            onAction="#handleNextRoute" disable="true"/>
+
+                <HBox fx:id="nextRouteButtonsHBox" spacing="10" alignment="CENTER">
+
+                        <HBox spacing="10" alignment="CENTER">
+    <Button fx:id="previousRouteButton" text="Previous Route"
+            onAction="#handlePreviousRoute" disable="true"/>
+    <Label fx:id="routeNumberLabel" text="Route 1 of 1"/>
+    <Button fx:id="nextRouteButton" text="Next Route"
+            onAction="#handleNextRoute" disable="true"/>
+</HBox>
+
+
+                <VBox spacing="5">
+                        <Label text="Max Paths" />
+                        <TextField fx:id="maxPathsField" prefWidth="60" text="10" />
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="Max Deviation" />
+                        <TextField fx:id="maxDeviationField" prefWidth="60" text="1.5" />
+                    </VBox>
+                    <VBox spacing="5">
+                        <Label text="Similarity Level" />
+                        <TextField fx:id="similarityLevelField" prefWidth="60" text="0.7" />
+                    </VBox>
+                    <VBox>
+                        <Label text="Max Paths Range: 1 - 100   (Default = 10)" />
+                        <Label text="Max Deviation Range: 1.0 - 2.0   (Default: 1.5 = 50% different) " />
+                        <Label text="Similarity Level Range: 0.0 - 1.0   (Default: 0.7 = 70% similarity)" />
+                    </VBox>
                 </HBox>
             </VBox>
-       </bottom>
+        </bottom>
    </BorderPane>
 </AnchorPane>

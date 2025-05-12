@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -32,8 +33,8 @@ public class Controller {
     public Label waypointStatusLabel;
     public Button addWaypointButton;
 
-    @FXML
-    private Canvas routeCanvas;
+
+    @FXML private Canvas routeCanvas;
     @FXML private ImageView mapImageView;
     @FXML private StackPane mapContainer;
     @FXML private Pane routeLayer;
@@ -66,13 +67,15 @@ public class Controller {
     private List<List<Station>> currentRoutes;  // Store current routes
     private int currentRouteIndex = 0;          // Track which route is displayed
 
-    @FXML
-    private Button nextRouteButton;             // Add this to your FXML
-    @FXML
-    private Button previousRouteButton;         // Add this to your FXML
-    @FXML
-    private Label routeNumberLabel;             // Add this to your FXML
+    @FXML public HBox nextRouteButtonsHBox;
+    @FXML private Button nextRouteButton;             // Add this to your FXML
+    @FXML private Button previousRouteButton;         // Add this to your FXML
+    @FXML private Label routeNumberLabel;             // Add this to your FXML
 
+    @FXML private HBox routeAdjustmentsHBox;
+    @FXML private TextField maxPathsField;
+    @FXML private TextField maxDeviationField;
+    @FXML private TextField similarityLevelField;
 
     @FXML
     public void initialize() {
@@ -139,11 +142,34 @@ public class Controller {
         stationManager.initialize();
         setupRouteListView();
 
+        // Add listeners to validate user input for similarity, deviation and max routes
+        maxPathsField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                maxPathsField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+
+        maxDeviationField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                maxDeviationField.setText(oldValue);
+            }
+        });
+
+        similarityLevelField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                similarityLevelField.setText(oldValue);
+            }
+        });
+
+
         long initEndTime = System.nanoTime();
         long initDuration = (initEndTime - initStartTime) / 1_000_000;
         System.out.println("Controller initialization took " + initDuration + " ms.");
         System.out.println("\nController initialization complete./n");
-    }
+    } // end of initialize section
+
+
+
 
     @FXML
     private void handleDijkstraShortestPath() {
@@ -158,6 +184,9 @@ public class Controller {
     @FXML
     private void handleFindRouteDFSRecursive() {
         System.out.println("DFS Recursive Search initiated...");
+
+        // Update parameters before search
+        updateDFSParameters();
 
         Station start = startStationComboBox.getValue();
         Station end = endStationComboBox.getValue();
@@ -227,6 +256,36 @@ public class Controller {
             routeVisualizer.resetMap();
         }
 
+    }
+
+    private void updateDFSParameters() {
+        try {
+            int maxPaths = Integer.parseInt(maxPathsField.getText());
+            double maxDeviation = Double.parseDouble(maxDeviationField.getText());
+            double similarityLevel = Double.parseDouble(similarityLevelField.getText());
+
+            // Validate ranges
+            if (maxPaths < 1) maxPaths = 1;
+            if (maxPaths > 100) maxPaths = 10;
+            if (maxDeviation < 1.0) maxDeviation = 1.0;
+            if (maxDeviation > 2.0) maxDeviation = 2.0;
+            if (similarityLevel < 0.0) similarityLevel = 0.0;
+            if (similarityLevel > 1.0) similarityLevel = 1.0;
+
+            // Update the fields with validated values
+            maxPathsField.setText(String.valueOf(maxPaths));
+            maxDeviationField.setText(String.format("%.1f", maxDeviation));
+            similarityLevelField.setText(String.format("%.1f", similarityLevel));
+
+            // Update the DFS parameters
+            dfsRouteFinder.setMaxPaths(maxPaths);
+            dfsRouteFinder.setMaxDeviation(maxDeviation);
+            dfsRouteFinder.setSimilarityLevel(similarityLevel);
+
+        } catch (NumberFormatException e) {
+            // Handle invalid input
+            System.err.println("Invalid input in route adjustment fields");
+        }
     }
 
     private void displayCurrentRoute(long executionTime) {

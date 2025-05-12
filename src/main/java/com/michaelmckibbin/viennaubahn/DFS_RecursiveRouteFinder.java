@@ -12,9 +12,32 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
     private Set<Station> visited;
     private List<Station> currentPath;
     private List<List<Station>> foundPaths;
-    private static final int MAX_PATHS = 100;
-    private static final double MAX_DEVIATION = 2.0; // 1.5 = 50% longer than shortest path
-    private static final double SIMILARITY_LEVEL = 1.0; // % Lower value allows more similar routes. Higher value requires routes to be more different
+
+    // Similarity, Max paths, & deviation settings
+//    private static final int MAX_PATHS = 10;
+//    private static final double MAX_DEVIATION = 1.5; // 1.5 = 50% longer than shortest path
+//    private static final double SIMILARITY_LEVEL = 0.7; // (0.0 - 1.0) Lower value allows more similar routes. Higher value requires routes to be more different
+    // Replace constants with variables
+    private int maxPaths = 10;
+    private double maxDeviation = 1.5;
+    private double similarityLevel = 0.7;
+
+    // Add setters for the variables
+    public void setMaxPaths(int maxPaths) {
+        this.maxPaths = maxPaths;
+    }
+
+    public void setMaxDeviation(double maxDeviation) {
+        this.maxDeviation = maxDeviation;
+    }
+
+    public void setSimilarityLevel(double similarityLevel) {
+        this.similarityLevel = similarityLevel;
+    }
+    //
+    // end of similarity, Max paths, & deviation settings
+    //
+
     private BFSRouteFinder bfsRouteFinder;
 
     public DFS_RecursiveRouteFinder(Graph graph) {
@@ -56,8 +79,12 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
             return null;
         }
 
+//        int shortestLength = shortestRoute.getStations().size();
+//        int maxAllowedLength = (int)(shortestLength * MAX_DEVIATION);
         int shortestLength = shortestRoute.getStations().size();
-        int maxAllowedLength = (int)(shortestLength * MAX_DEVIATION);
+        int maxAllowedLength = (int)(shortestLength * maxDeviation);
+
+
 
         System.out.println("Shortest path length through waypoints: " + shortestLength);
         System.out.println("Maximum allowed length: " + maxAllowedLength);
@@ -99,8 +126,12 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
                                         int currentIndex, List<List<Station>> segmentPaths,
                                         int maxLength) {
         // Stop if we've found enough paths or current path is too long
-        if (foundPaths.size() >= MAX_PATHS ||
-            (currentFullPath.size() > 0 && currentFullPath.size() > maxLength)) {
+//        if (foundPaths.size() >= MAX_PATHS ||
+//            (currentFullPath.size() > 0 && currentFullPath.size() > maxLength)) {
+//            return;
+//        }
+        if (foundPaths.size() >= maxPaths ||
+                (currentFullPath.size() > 0 && currentFullPath.size() > maxLength)) {
             return;
         }
 
@@ -161,12 +192,21 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
         // Sort segment paths by length
         segmentPaths.sort((path1, path2) -> path1.size() - path2.size());
 
-        // Return at most MAX_PATHS paths for this segment
-        return segmentPaths.subList(0, Math.min(MAX_PATHS, segmentPaths.size()));
+//        // Return at most MAX_PATHS paths for this segment
+//        return segmentPaths.subList(0, Math.min(MAX_PATHS, segmentPaths.size()));
+//    }
+//
+//    private void dfsRecursive(Station current, Station end, int maxLength, List<List<Station>> segmentPaths) {
+//        if (segmentPaths.size() >= MAX_PATHS || currentPath.size() > maxLength) {
+//            return;
+//        }
+
+        // Return at most maxPaths paths for this segment
+        return segmentPaths.subList(0, Math.min(maxPaths, segmentPaths.size()));
     }
 
     private void dfsRecursive(Station current, Station end, int maxLength, List<List<Station>> segmentPaths) {
-        if (segmentPaths.size() >= MAX_PATHS || currentPath.size() > maxLength) {
+        if (segmentPaths.size() >= maxPaths || currentPath.size() > maxLength) {
             return;
         }
 
@@ -181,7 +221,10 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
         } else {
             Set<Station> neighbors = graph.getNeighbors(current);
             for (Station neighbor : neighbors) {
-                if (!visited.contains(neighbor) && segmentPaths.size() < MAX_PATHS) {
+//                if (!visited.contains(neighbor) && segmentPaths.size() < MAX_PATHS) {
+//                    dfsRecursive(neighbor, end, maxLength, segmentPaths);
+//                }
+                if (!visited.contains(neighbor) && segmentPaths.size() < maxPaths) {
                     dfsRecursive(neighbor, end, maxLength, segmentPaths);
                 }
             }
@@ -203,7 +246,8 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
 
             // percentage similar allowed
             double similarity = (double) newPathSet.size() / Math.min(newPath.size(), existingPath.size());
-            if (similarity > SIMILARITY_LEVEL) {
+            //if (similarity > SIMILARITY_LEVEL) { // When constant used
+            if (similarity > similarityLevel) { // When user adjusted variable used
                 return false;
             }
         }
