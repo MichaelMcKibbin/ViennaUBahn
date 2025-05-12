@@ -56,16 +56,28 @@ public class Controller {
   //  private Set<Station> waypoints;
     private ObservableList<Station> waypoints = FXCollections.observableArrayList();
     private RouteVisualizer routeVisualizer;
-    private BFSRouteFinder routeFinder;
-    DFS_RecursiveRouteFinder dfsRouteFinder = new DFS_RecursiveRouteFinder(graph);
+    private BFSRouteFinder bfsRouteFinder;
+    private DFS_RecursiveRouteFinder dfsRouteFinder;
 
     private RouteMetricsDisplay metricsDisplay;
     @FXML
     private ListView<Station> routeListView;
 
+    private List<List<Station>> currentRoutes;  // Store current routes
+    private int currentRouteIndex = 0;          // Track which route is displayed
+
+    @FXML
+    private Button nextRouteButton;             // Add this to your FXML
+    @FXML
+    private Button previousRouteButton;         // Add this to your FXML
+    @FXML
+    private Label routeNumberLabel;             // Add this to your FXML
+
+
     @FXML
     public void initialize() {
         System.out.println("Initializing Controller...");
+        long initStartTime = System.nanoTime();
 
         // Load images
         colorMap = new Image(getClass().getResourceAsStream(
@@ -86,15 +98,23 @@ public class Controller {
         routeVisualizer = new RouteVisualizer(mapImageView, routeLayer, waypoints, colorMap, greyMap);
 
         // Initialize graph
+        System.out.println("Initializing graph...");
+        long graphStartTime = System.nanoTime();
         graph = new Graph();
         graph.loadFromCSV("/com/michaelmckibbin/viennaubahn/data/vienna_subway_list_1.csv");
         graph.printGraphStructure();
         graph.printTransferStations();
+        long graphEndTime = System.nanoTime();
+        long graphDuration = (graphEndTime - graphStartTime) / 1_000_000;
+        System.out.println("Graph initialization took " + graphDuration + " ms.");
+        System.out.println("Graph initialization complete.");
 
         // Initialize route finding components
         metricsDisplay = new RouteMetricsDisplay(stopsLabel, timeLabel,
                                                nodesLabel, queueLabel);
-        routeFinder = new BFSRouteFinder(graph);
+        bfsRouteFinder = new BFSRouteFinder(graph); // Initialize BFS
+        dfsRouteFinder = new DFS_RecursiveRouteFinder(graph);  // Initialize DFS
+
 
         // Initialize station selection components
         List<Station> stations = new ArrayList<>(graph.getAllStations());
@@ -119,104 +139,141 @@ public class Controller {
         stationManager.initialize();
         setupRouteListView();
 
-        System.out.println("\nController initialization complete.");
+        long initEndTime = System.nanoTime();
+        long initDuration = (initEndTime - initStartTime) / 1_000_000;
+        System.out.println("Controller initialization took " + initDuration + " ms.");
+        System.out.println("\nController initialization complete./n");
     }
 
     @FXML
-private void handleDijkstraShortestPath() {
-//    System.out.println("Dijkstra Search initiated...");
-//    Station start = startStationComboBox.getValue();
-//    Station end = endStationComboBox.getValue();
-//
-//    if (start == null || end == null) {
-//        System.out.println("Start or end station not selected");
-//        return;
-//    }
-//
-//    try {
-//        List<Station> waypointsList = new ArrayList<>(waypoints);
-//
-//        System.out.println("Finding route from " + start.getName() + " to " + end.getName());
-//        if (!waypointsList.isEmpty()) {
-//            System.out.println("With waypoints: " + waypointsList);
-//        }
-//
-//        RoutePath routePath = routeFinder.findRouteDijkstra(start, end, waypointsList);
-//
-//        if (routePath != null) {
-//            routeVisualizer.drawRoute(routePath);
-//
-//            routeInfoBox.setVisible(true);
-//            performanceBox.setVisible(true);
-//
-//            metricsDisplay.updateMetrics(
-//                routePath.getNumberOfStops(),
-//                routePath.getExecutionTimeMillis(),
-//                routePath.getNodesVisited(),
-//                routePath.getMaxQueueSize()
-//            );
-//
-//            System.out.println("Route found successfully!");
-//        } else {
-//            System.out.println("No route found!");
-//            routeVisualizer.resetMap();
-//        }
-//    } catch (Exception e) {
-//        System.err.println("Error finding route: " + e.getMessage());
-//        e.printStackTrace();
-//        routeVisualizer.resetMap();
-//    }
-}
+    private void handleDijkstraShortestPath() {
 
-@FXML
-private void handleDijkstraWithPenalties() {
-//    System.out.println("Dijkstra with Penalties Search initiated...");
-//    Station start = startStationComboBox.getValue();
-//    Station end = endStationComboBox.getValue();
-//
-//    if (start == null || end == null) {
-//        System.out.println("Start or end station not selected");
-//        return;
-//    }
-//
-//    try {
-//        List<Station> waypointsList = new ArrayList<>(waypoints);
-//
-//        System.out.println("Finding route from " + start.getName() + " to " + end.getName());
-//        if (!waypointsList.isEmpty()) {
-//            System.out.println("With waypoints: " + waypointsList);
-//        }
-//
-//        RoutePath routePath = routeFinder.findRouteDijkstraWithPenalties(start, end, waypointsList);
-//
-//        if (routePath != null) {
-//            routeVisualizer.drawRoute(routePath);
-//
-//            routeInfoBox.setVisible(true);
-//            performanceBox.setVisible(true);
-//
-//            metricsDisplay.updateMetrics(
-//                routePath.getNumberOfStops(),
-//                routePath.getExecutionTimeMillis(),
-//                routePath.getNodesVisited(),
-//                routePath.getMaxQueueSize()
-//            );
-//
-//            System.out.println("Route found successfully!");
-//        } else {
-//            System.out.println("No route found!");
-//            routeVisualizer.resetMap();
-//        }
-//    } catch (Exception e) {
-//        System.err.println("Error finding route: " + e.getMessage());
-//        e.printStackTrace();
-//        routeVisualizer.resetMap();
-//    }
-}
+    }
+
+    @FXML
+    private void handleDijkstraWithPenalties() {
+
+    }
 
     @FXML
     private void handleFindRouteDFSRecursive() {
+        System.out.println("DFS Recursive Search initiated...");
 
+        Station start = startStationComboBox.getValue();
+        Station end = endStationComboBox.getValue();
+
+        if (start == null || end == null) {
+            System.out.println("Start or end station not selected");
+            return;
+        }
+
+        try {
+            // Get waypoints
+            List<Station> waypointsList = new ArrayList<>(waypoints);
+
+            System.out.println("Finding route from " + start.getName() + " to " + end.getName());
+            if (!waypointsList.isEmpty()) {
+                System.out.println("With waypoints: " + waypointsList);
+            }
+
+            // Start timing
+            long startTime = System.nanoTime();
+
+//            // Find route
+//            RoutePath routePath = dfsRouteFinder.findRoute(start, end, waypointsList);
+
+            // Get multiple routes
+            currentRoutes = dfsRouteFinder.findMultipleRoutes(start, end, waypointsList);
+
+
+            // End timing
+            long endTime = System.nanoTime();
+            long executionTime = endTime - startTime;
+
+//            if (routePath != null) {
+//                routeVisualizer.drawRoute(routePath);
+//
+//                // Update route list view
+//                routeListView.getItems().clear();
+//                routeListView.getItems().addAll(routePath.getStations());
+//
+//                // Update route list and metrics
+//                routeInfoBox.setVisible(true);
+//                performanceBox.setVisible(true);
+//
+//                metricsDisplay.updateMetrics(
+//                    routePath.getNumberOfStops(),
+//                    executionTime,  // Pass the measured execution time
+//                    routePath.getNodesVisited(),
+//                    routePath.getMaxQueueSize()
+//                );
+
+            if (currentRoutes != null && !currentRoutes.isEmpty()) {
+                currentRouteIndex = 0;
+                displayCurrentRoute(executionTime);
+
+                // Enable/disable navigation buttons
+                updateNavigationButtons();
+
+//===>
+                System.out.println("Route(s) found successfully!");
+            } else {
+                System.out.println("No route(s) found!");
+                routeVisualizer.resetMap();
+            }
+        } catch (Exception e) {
+            System.err.println("Error finding route: " + e.getMessage());
+            e.printStackTrace();
+            routeVisualizer.resetMap();
+        }
+
+    }
+
+    private void displayCurrentRoute(long executionTime) {
+        List<Station> currentPath = currentRoutes.get(currentRouteIndex);
+
+        routeVisualizer.drawRoute(new RoutePath(currentPath, executionTime,
+                dfsRouteFinder.getNodesVisited(),
+                dfsRouteFinder.getMaxQueueSize()));
+
+        routeListView.getItems().clear();
+        routeListView.getItems().addAll(currentPath);
+
+        routeInfoBox.setVisible(true);
+        performanceBox.setVisible(true);
+
+        routeNumberLabel.setText(String.format("Route %d of %d",
+                currentRouteIndex + 1, currentRoutes.size()));
+
+        metricsDisplay.updateMetrics(
+                currentPath.size(),
+                executionTime,
+                dfsRouteFinder.getNodesVisited(),
+                dfsRouteFinder.getMaxQueueSize()
+        );
+    }
+
+    @FXML
+    private void handleNextRoute() {
+        if (currentRoutes != null && currentRouteIndex < currentRoutes.size() - 1) {
+            currentRouteIndex++;
+            displayCurrentRoute(0);  // Pass 0 for execution time as it's already been measured
+            updateNavigationButtons();
+        }
+    }
+
+    @FXML
+    private void handlePreviousRoute() {
+        if (currentRoutes != null && currentRouteIndex > 0) {
+            currentRouteIndex--;
+            displayCurrentRoute(0);
+            updateNavigationButtons();
+        }
+    }
+
+    private void updateNavigationButtons() {
+        previousRouteButton.setDisable(currentRouteIndex == 0);
+        nextRouteButton.setDisable(currentRouteIndex >= currentRoutes.size() - 1);
     }
 
     @FXML
@@ -224,16 +281,16 @@ private void handleDijkstraWithPenalties() {
 
     }
 
-@FXML
-private void handleRemoveWaypoint() {
-    Station selectedWaypoint = waypointsListView.getSelectionModel().getSelectedItem();
-    if (selectedWaypoint != null) {
-        waypoints.remove(selectedWaypoint);
-//        if (waypoints.isEmpty()) {
-//            removeWaypointButton.setDisable(true);
-//        }
+    @FXML
+    private void handleRemoveWaypoint() {
+        Station selectedWaypoint = waypointsListView.getSelectionModel().getSelectedItem();
+        if (selectedWaypoint != null) {
+            waypoints.remove(selectedWaypoint);
+    //        if (waypoints.isEmpty()) {
+    //            removeWaypointButton.setDisable(true);
+    //        }
+        }
     }
-}
 
 @FXML
 private void handleResetMap() {
@@ -266,7 +323,7 @@ private void handleFindRouteBFS() {
         long startTime = System.nanoTime();
 
         // Find route
-        RoutePath routePath = routeFinder.findRoute(start, end, waypointsList);
+        RoutePath routePath = bfsRouteFinder.findRoute(start, end, waypointsList);
 
         // End timing
         long endTime = System.nanoTime();

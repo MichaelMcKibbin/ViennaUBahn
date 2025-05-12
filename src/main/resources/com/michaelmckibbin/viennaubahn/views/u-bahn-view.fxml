@@ -84,7 +84,12 @@
 
         <bottom>
             <VBox spacing="5">
-                <HBox spacing="5">
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="previousRouteButton" text="Previous Route"
+                            onAction="#handlePreviousRoute" disable="true"/>
+                    <Label fx:id="routeNumberLabel" text="Route 1 of 1"/>
+                    <Button fx:id="nextRouteButton" text="Next Route"
+                            onAction="#handleNextRoute" disable="true"/>
                 </HBox>
             </VBox>
        </bottom>

@@ -11,12 +11,17 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
     private int maxQueueSize;
     private Set<Station> visited;
     private List<Station> currentPath;
-    private List<Station> bestPath;
+    private List<List<Station>> foundPaths;
+    private static final int MAX_PATHS = 100;
+    private static final double MAX_DEVIATION = 2.0; // 1.5 = 50% longer than shortest path
+    private static final double SIMILARITY_LEVEL = 1.0; // % Lower value allows more similar routes. Higher value requires routes to be more different
+    private BFSRouteFinder bfsRouteFinder;
 
     public DFS_RecursiveRouteFinder(Graph graph) {
         this.graph = graph;
         this.nodesVisited = 0;
         this.maxQueueSize = 0;
+        this.bfsRouteFinder = new BFSRouteFinder(graph);
     }
 
     @Override
@@ -26,11 +31,10 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
         maxQueueSize = 0;
 
         try {
-            List<Station> path = findRoutesWithWaypoints(start, end, waypoints);
+            List<List<Station>> paths = findMultipleRoutes(start, end, waypoints);
 
-            if (path != null) {
-                System.out.println("Route found with " + path.size() + " stations");
-                return new RoutePath(path, 0, nodesVisited, maxQueueSize);
+            if (paths != null && !paths.isEmpty()) {
+                return new RoutePath(paths.get(0), 0, nodesVisited, maxQueueSize);
             }
             System.out.println("No route found");
             return null;
@@ -40,79 +44,174 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
         }
     }
 
-    private List<Station> findRoutesWithWaypoints(Station start, Station end, List<Station> waypoints) {
+    public List<List<Station>> findMultipleRoutes(Station start, Station end, List<Station> waypoints) {
         if (waypoints.isEmpty()) {
-            return findRoute(start, end);
+            return findMultipleDirectRoutes(start, end);
         }
 
+        // Get shortest path through waypoints using BFS for reference
+        RoutePath shortestRoute = bfsRouteFinder.findRoute(start, end, waypoints);
+        if (shortestRoute == null) {
+            System.out.println("No route found with BFS through waypoints");
+            return null;
+        }
+
+        int shortestLength = shortestRoute.getStations().size();
+        int maxAllowedLength = (int)(shortestLength * MAX_DEVIATION);
+
+        System.out.println("Shortest path length through waypoints: " + shortestLength);
+        System.out.println("Maximum allowed length: " + maxAllowedLength);
+
+        // Initialize for full path finding
+        foundPaths = new ArrayList<>();
+
+        // Find multiple routes through waypoints
+        findRoutesWithWaypoints(start, end, waypoints, maxAllowedLength);
+
+        if (foundPaths.isEmpty()) {
+            System.out.println("No valid paths found within deviation limit");
+            return null;
+        }
+
+        // Sort paths by length
+        foundPaths.sort((path1, path2) -> path1.size() - path2.size());
+
+        // Print info about found paths
+        for (int i = 0; i < foundPaths.size(); i++) {
+            System.out.println("Path " + (i + 1) + " length: " + foundPaths.get(i).size() +
+                             " (+" + (foundPaths.get(i).size() - shortestLength) + " stations)");
+        }
+
+        return foundPaths;
+    }
+
+    private void findRoutesWithWaypoints(Station start, Station end, List<Station> waypoints, int maxLength) {
         List<Station> allPoints = new ArrayList<>();
         allPoints.add(start);
         allPoints.addAll(waypoints);
         allPoints.add(end);
 
-        List<Station> completePath = new ArrayList<>();
-        completePath.add(start);
+        // Try different combinations of paths between waypoints
+        findWaypointCombinations(allPoints, new ArrayList<>(), 0, new ArrayList<>(), maxLength);
+    }
 
-        System.out.println("Processing " + (allPoints.size() - 1) + " route segments...");
-
-        for (int i = 0; i < allPoints.size() - 1; i++) {
-            Station currentStart = allPoints.get(i);
-            Station currentEnd = allPoints.get(i + 1);
-
-            System.out.println("Finding route segment " + (i + 1) +
-                    " from " + currentStart.getName() +
-                    " to " + currentEnd.getName());
-
-            List<Station> currentRoute = findRoute(currentStart, currentEnd);
-            if (currentRoute == null) {
-                System.out.println("Failed to find route segment " + (i + 1));
-                return null;
-            }
-
-            completePath.addAll(currentRoute.subList(1, currentRoute.size()));
+    private void findWaypointCombinations(List<Station> points, List<Station> currentFullPath,
+                                        int currentIndex, List<List<Station>> segmentPaths,
+                                        int maxLength) {
+        // Stop if we've found enough paths or current path is too long
+        if (foundPaths.size() >= MAX_PATHS ||
+            (currentFullPath.size() > 0 && currentFullPath.size() > maxLength)) {
+            return;
         }
 
-        return completePath;
+        // If we've processed all points
+        if (currentIndex >= points.size() - 1) {
+            if (!currentFullPath.isEmpty() && isPathSufficientlyDifferent(currentFullPath)) {
+                foundPaths.add(new ArrayList<>(currentFullPath));
+                System.out.println("Found valid path through waypoints, length: " + currentFullPath.size());
+            }
+            return;
+        }
+
+        // Get current segment's start and end
+        Station segmentStart = points.get(currentIndex);
+        Station segmentEnd = points.get(currentIndex + 1);
+
+        // Find multiple routes for this segment
+        List<List<Station>> segmentRoutes = findMultipleDirectRoutes(segmentStart, segmentEnd);
+        if (segmentRoutes == null || segmentRoutes.isEmpty()) {
+            return;
+        }
+
+        // Try each route for this segment
+        for (List<Station> segmentRoute : segmentRoutes) {
+            List<Station> newFullPath = new ArrayList<>(currentFullPath);
+
+            // Add segment route (skip first station if not first segment to avoid duplicates)
+            if (currentFullPath.isEmpty()) {
+                newFullPath.addAll(segmentRoute);
+            } else {
+                newFullPath.addAll(segmentRoute.subList(1, segmentRoute.size()));
+            }
+
+            // Only continue if we're still within length limit
+            if (newFullPath.size() <= maxLength) {
+                List<List<Station>> newSegmentPaths = new ArrayList<>(segmentPaths);
+                newSegmentPaths.add(segmentRoute);
+
+                // Recurse to next segment
+                findWaypointCombinations(points, newFullPath, currentIndex + 1,
+                                      newSegmentPaths, maxLength);
+            }
+        }
     }
 
-    private List<Station> findRoute(Station start, Station end) {
+    private List<List<Station>> findMultipleDirectRoutes(Station start, Station end) {
         visited = new HashSet<>();
         currentPath = new ArrayList<>();
-        bestPath = null;
+        List<List<Station>> segmentPaths = new ArrayList<>();
 
-        // Start the recursive DFS
-        dfsRecursive(start, end);
+        // Find direct routes between two points
+        dfsRecursive(start, end, Integer.MAX_VALUE, segmentPaths);
 
-        return bestPath;
+        if (segmentPaths.isEmpty()) {
+            return null;
+        }
+
+        // Sort segment paths by length
+        segmentPaths.sort((path1, path2) -> path1.size() - path2.size());
+
+        // Return at most MAX_PATHS paths for this segment
+        return segmentPaths.subList(0, Math.min(MAX_PATHS, segmentPaths.size()));
     }
 
-    private void dfsRecursive(Station current, Station end) {
+    private void dfsRecursive(Station current, Station end, int maxLength, List<List<Station>> segmentPaths) {
+        if (segmentPaths.size() >= MAX_PATHS || currentPath.size() > maxLength) {
+            return;
+        }
+
         nodesVisited++;
         visited.add(current);
         currentPath.add(current);
 
-        // Update maxQueueSize (for consistency with other implementations)
         maxQueueSize = Math.max(maxQueueSize, currentPath.size());
 
-        // If we've found the destination
         if (current.equals(end)) {
-            // If this is the first valid path found or it's shorter than the current best
-            if (bestPath == null || currentPath.size() < bestPath.size()) {
-                bestPath = new ArrayList<>(currentPath);
-            }
+            segmentPaths.add(new ArrayList<>(currentPath));
         } else {
-            // Explore neighbors
             Set<Station> neighbors = graph.getNeighbors(current);
             for (Station neighbor : neighbors) {
-                if (!visited.contains(neighbor)) {
-                    dfsRecursive(neighbor, end);
+                if (!visited.contains(neighbor) && segmentPaths.size() < MAX_PATHS) {
+                    dfsRecursive(neighbor, end, maxLength, segmentPaths);
                 }
             }
         }
 
-        // Backtrack
         currentPath.remove(currentPath.size() - 1);
         visited.remove(current);
+    }
+
+    private boolean isPathSufficientlyDifferent(List<Station> newPath) {
+        if (foundPaths.isEmpty()) {
+            return true;
+        }
+
+        for (List<Station> existingPath : foundPaths) {
+            Set<Station> newPathSet = new HashSet<>(newPath);
+            Set<Station> existingPathSet = new HashSet<>(existingPath);
+            newPathSet.retainAll(existingPathSet);
+
+            // percentage similar allowed
+            double similarity = (double) newPathSet.size() / Math.min(newPath.size(), existingPath.size());
+            if (similarity > SIMILARITY_LEVEL) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<List<Station>> getFoundPaths() {
+        return foundPaths;
     }
 
     public int getNodesVisited() {
@@ -123,4 +222,3 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
         return maxQueueSize;
     }
 }
-
