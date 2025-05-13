@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class Controller {
-    // Keep these constants as they're used in other parts of Controller
+
     private static final double ORIGINAL_WIDTH = 1488.0;
     private static final double ORIGINAL_HEIGHT = 993.0;
     private static final double FIT_WIDTH = 1000.0;
@@ -544,7 +544,7 @@ private void handleFindRouteDFSRecursive() {
 //
 //                metricsDisplay.updateMetrics(
 //                        routePath.getNumberOfStops(),
-//                        executionTime,  // Pass the measured execution time
+//                        executionTime,
 //                        routePath.getNodesVisited(),
 //                        routePath.getMaxQueueSize()
 //                );
@@ -704,7 +704,7 @@ private void handleFindRouteDFSRecursive() {
 
 @FXML
 private void handleResetMap() {
-    handleReset(); // This calls the existing reset method
+    handleReset(); // calls the existing reset method
 }
 
 

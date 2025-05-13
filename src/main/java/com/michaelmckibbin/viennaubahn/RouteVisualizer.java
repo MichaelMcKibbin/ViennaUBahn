@@ -13,6 +13,36 @@ import javafx.scene.shape.StrokeLineCap;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Visualizes routes on the Vienna U-Bahn map by drawing paths and station markers.
+ * This class handles the graphical representation of routes, including:
+ * <ul>
+ *     <li>Drawing colored lines between stations based on U-Bahn line colors</li>
+ *     <li>Displaying different types of station markers (start, end, waypoints, line changes)</li>
+ *     <li>Managing the map background (color/grey versions)</li>
+ *     <li>Scaling coordinates to match the display size</li>
+ * </ul>
+ *
+ * The visualizer uses different visual indicators for various station types:
+ * <ul>
+ *     <li>Start stations: Large pale violet red markers</li>
+ *     <li>End stations: Large lime green markers</li>
+ *     <li>Waypoints: Medium-sized indigo markers</li>
+ *     <li>Line changes: Medium-sized yellow markers</li>
+ *     <li>Intermediate stations: Small green-yellow markers</li>
+ * </ul>
+ *
+ * The class handles coordinate scaling from the original map dimensions (1488x993)
+ * to the display size, maintaining proper proportions and applying necessary offsets
+ * for accurate positioning.
+ *
+ * @author Michael McKibbin
+ * @version 1.0
+ * @see Station
+ * @see RoutePath
+ * @see LineColor
+ */
+
 public class RouteVisualizer {
     // Original dimensions and scaling constants
     private static final double ORIGINAL_WIDTH = 1488.0;

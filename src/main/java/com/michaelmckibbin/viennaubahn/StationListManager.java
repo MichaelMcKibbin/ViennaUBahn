@@ -7,6 +7,12 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.StringConverter;
 
+/**
+ * Manages the list of waypoints in the application.
+ * This class handles the setup and management of the waypoint list view,
+ * including the removal of waypoints and the setup of various components
+ * related to the waypoint list.
+ */
 public class StationListManager {
     private final ComboBox<Station> waypointComboBox;
     private final ListView<Station> waypointsListView;

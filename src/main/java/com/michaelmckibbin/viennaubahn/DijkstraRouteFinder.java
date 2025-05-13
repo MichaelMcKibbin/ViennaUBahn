@@ -7,7 +7,11 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+/**
+ * This class implements the Dijkstra algorithm to find the shortest path between two stations.
+ * It uses a priority queue to efficiently select the next station to visit based on the current
+ * shortest distance to that station.
+ */
 public class DijkstraRouteFinder implements RouteFinder {
     private final Graph graph;
     private Map<String, List<SubwayEdge>> adjacencyList;

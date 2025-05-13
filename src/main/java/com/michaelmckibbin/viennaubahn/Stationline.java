@@ -3,6 +3,10 @@ package com.michaelmckibbin.viennaubahn;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a line in the Vienna subway system.
+ * It contains the name of the line and a list of stations on the line.
+ */
 public class Stationline {
     // The name of the line
     private String lineName;

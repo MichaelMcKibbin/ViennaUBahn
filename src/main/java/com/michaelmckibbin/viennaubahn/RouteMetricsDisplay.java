@@ -4,6 +4,11 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
+/**
+ * This class is responsible for displaying the metrics of a route.
+ * It updates the labels on the UI with the number of stops, time taken,
+ * nodes visited, and maximum queue size.
+ */
 public class RouteMetricsDisplay {
     @FXML private Label stopsLabel;
     @FXML private Label timeLabel;

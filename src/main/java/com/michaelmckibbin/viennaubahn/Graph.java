@@ -9,7 +9,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.*;
 
-
+/**
+ * This class represents a graph of stations and connections between them.
+ * It uses an adjacency list to store the connections and provides methods
+ * to add stations, connections, and lines.
+ */
 public class Graph implements Initializable {
     // A static graph object to represent the graph
     public static Graph graph;

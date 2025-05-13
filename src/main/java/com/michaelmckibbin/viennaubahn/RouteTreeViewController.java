@@ -6,11 +6,53 @@ import javafx.scene.control.TreeItem;
 
 import java.util.*;
 
+/**
+ * Controls the tree view visualization of U-Bahn routes in the Vienna subway system.
+ * This controller manages a hierarchical display of stations and their connections,
+ * preventing cycles by tracking visited stations.
+ *
+ * <p>The class provides functionality to:</p>
+ * <ul>
+ *     <li>Initialize and populate a tree structure from a root station</li>
+ *     <li>Create hierarchical relationships between connected stations</li>
+ *     <li>Automatically expand all branches of the tree for better visibility</li>
+ *     <li>Handle cycle prevention in the station network</li>
+ * </ul>
+ *
+ * <p>The tree view is populated using:</p>
+ * <ul>
+ *     <li>A root station as the starting point</li>
+ *     <li>A map of stations to their connected stations</li>
+ *     <li>A set of visited stations to prevent infinite loops in cyclic connections</li>
+ * </ul>
+ *
+ * Example usage:
+ * <pre>
+ * RouteTreeViewController controller = ...;
+ * Station rootStation = ...;
+ * Map<Station, List<Station>> connectionMap = ...;
+ * controller.initializeTree(rootStation, connectionMap);
+ * </pre>
+ *
+ * @author Michael McKibbin
+ * @version 1.0
+ * @see Station
+ * @see TreeView
+ * @see TreeItem
+ */
 public class RouteTreeViewController {
     @FXML
     private TreeView<String> routeTreeView;
     private Set<Station> visitedStations;
 
+
+    /**
+     * Initializes the tree view with a root station and its connections.
+     * Creates a hierarchical view of the station network, starting from the specified root.
+     *
+     * @param rootStation The station to use as the root of the tree
+     * @param treeMap A map containing stations and their connected stations
+     */
     public void initializeTree(Station rootStation, Map<Station, List<Station>> treeMap) {
         System.out.println("\nInitializing tree with root: " + rootStation.getName());
         System.out.println("Tree map contains entries for:");
@@ -24,6 +66,13 @@ public class RouteTreeViewController {
         // Expand all tree items
         expandTreeView(rootItem);
     }
+
+
+    /**
+     * Recursively expands all nodes in the tree view.
+     *
+     * @param item The tree item to expand, along with all its children
+     */
     private void expandTreeView(TreeItem<?> item) {
         if (item != null && !item.isLeaf()) {
             item.setExpanded(true);
@@ -33,6 +82,16 @@ public class RouteTreeViewController {
         }
     }
 
+
+    /**
+     * Creates a tree item for a station and recursively creates items for its children.
+     * Prevents cycles by tracking visited stations.
+     *
+     * @param station The station to create a tree item for
+     * @param treeMap Map of stations to their connected stations
+     * @return A TreeItem representing the station and its children, or null if the station
+     *         was already visited or is null
+     */
     private TreeItem<String> createTreeItem(Station station, Map<Station, List<Station>> treeMap) {
         if (station == null || visitedStations.contains(station)) {
             System.out.println("Skipping " + (station == null ? "null" : station.getName() + " (visited)"));

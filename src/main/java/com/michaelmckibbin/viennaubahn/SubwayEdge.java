@@ -1,5 +1,10 @@
 package com.michaelmckibbin.viennaubahn;
 
+/**
+ * Represents an edge in the graph, connecting two stations.
+ * This class encapsulates the properties of an edge, including the travel time,
+ * distance, cost, and the line used for the travel.
+ */
 public class SubwayEdge {
     private final String edgeId;
     private final Station fromStation;

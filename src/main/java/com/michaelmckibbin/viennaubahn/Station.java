@@ -2,6 +2,11 @@ package com.michaelmckibbin.viennaubahn;
 
 import java.util.*;
 
+/**
+ * Represents a station in the Vienna subway system.
+ * Each station has a name, line, color, and coordinates.
+ * Stations can be connected to other stations, forming a graph structure.
+ */
 public class Station {
     private final String stationName;
     private final String lineName;
