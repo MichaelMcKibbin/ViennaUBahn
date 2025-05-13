@@ -1,0 +1,105 @@
+edge_id,station_name,next_station,line_number,line_color,x_coordinate,y_coordinate,edge_travel_time,edge_distance,edge_cost
+1001,Oberlaa,Neulaa,1,red,832,956,2.5,2,1
+1002,Neulaa,Alaudagasse,1,red,810,934,2.5,2,1
+1003,Alaudagasse,Altes Landgut,1,red,790,912,2.5,2,1
+1004,Altes Landgut,Troststrasse,1,red,768,891,2.5,2,1
+1005,Troststrasse,Reumannplatz,1,red,745,868,2.5,2,1
+1006,Reumannplatz,Keplerplatz,1,red,722,846,2.5,2,1
+1007,Keplerplatz,Suedtiroler Platz - Hauptbahnhof,1,red,712,810,2.5,2,1
+1008,Suedtiroler Platz - Hauptbahnhof,Taubstummengasse,1,red,712,748,2.5,2,1
+1009,Taubstummengasse,Karlsplatz,1,red,712,680,2.5,2,1
+1010,Karlsplatz,Stephansplatz,1,red,710,610,2.5,2,1
+1011,Stephansplatz,Schwedenplatz,1,red,712,498,2.5,2,1
+1012,Schwedenplatz,Nestroyplatz,1,red,789,405,2.5,2,1
+1013,Nestroyplatz,Praterstern,1,red,820,374,2.5,2,1
+1014,Praterstern,Vorgartenstrasse,1,red,850,343,2.5,2,1
+1015,Vorgartenstrasse,Donauinsel,1,red,883,311,2.5,2,1
+1016,Donauinsel,Kaisermuehlen/VIC,1,red,920,273,2.5,2,1
+1017,Kaisermuehlen/VIC,Alte Donau,1,red,946,249,2.5,2,1
+1018,Alte Donau,Kagran,1,red,966,288,2.5,2,1
+1019,Kagran,Kagraner Platz,1,red,996,198,2.5,2,1
+1020,Kagraner Platz,Rennbahnweg,1,red,1019,176,2.5,2,1
+1021,Rennbahnweg,Aderklaaer strasse,1,red,1040,155,2.5,2,1
+1022,Aderklaaer strasse,Grossfeldsiedlung,1,red,1063,132,2.5,2,1
+1023,Grossfeldsiedlung,Leopoldau,1,red,1086,107,2.5,2,1
+1024,Seestadt,Aspern Nord,2,purple,1378,395,2.5,2,1
+1025,Aspern Nord,Hausfeldstrasse,2,purple,1363,329,2.5,2,1
+1026,Hausfeldstrasse,Aspernstrasse,2,purple,1319,329,2.5,2,1
+1027,Aspernstrasse,Donauspital,2,purple,1288,358,2.5,2,1
+1028,Donauspital,Hardeggasse,2,purple,1250,395,2.5,2,1
+1029,Hardeggasse,Stadlau,2,purple,1203,395,2.5,2,1
+1030,Stadlau,Donaustadtbruecke,2,purple,1166,419,2.5,2,1
+1031,Donaustadtbruecke,Donaumarina,2,purple,1135,452,2.5,2,1
+1032,Donaumarina,Stadion,2,purple,1056,500,2.5,2,1
+1033,Stadion,Krieau,2,purple,986,432,2.5,2,1
+1034,Krieau,Messe-Prater,2,purple,947,395,2.5,2,1
+1035,Messe-Prater,Praterstern,2,purple,916,365,2.5,2,1
+1036,Praterstern,Taborstrasse,2,purple,850,343,2.5,2,1
+1037,Taborstrasse,Schottenring,2,purple,789,344,2.5,2,1
+1038,Schottenring,Schottentor,2,purple,724,344,2.5,2,1
+1039,Schottentor,Rathaus,2,purple,665,394,2.5,2,1
+1040,Rathaus,Volkstheater,2,purple,625,432,2.5,2,1
+1041,Volkstheater,Museumsquartier,2,purple,600,500,2.5,2,1
+1042,Museumsquartier,Karlsplatz,2,purple,627,568,2.5,2,1
+1043,Ottakring,Kendlerstrasse,3,orange,334,356,2.5,2,1
+1044,Kendlerstrasse,Huetteldorfer strasse,3,orange,362,385,2.5,2,1
+1045,Huetteldorfer strasse,Johnstrasse,3,orange,383,407,2.5,2,1
+1046,Johnstrasse,Schweglerstrasse,3,orange,412,435,2.5,2,1
+1047,Schweglerstrasse,Westbahnhof,3,orange,438,461,2.5,2,1
+1048,Westbahnhof,Zieglergasse,3,orange,479,499,2.5,2,1
+1049,Zieglergasse,Neubaugasse,3,orange,522,500,2.5,2,1
+1050,Neubaugasse,Volkstheater,3,orange,558,500,2.5,2,1
+1051,Volkstheater,Herrengasse,3,orange,600,500,2.5,2,1
+1052,Herrengasse,Stephansplatz,3,orange,667,500,2.5,2,1
+1053,Stephansplatz,Stubentor,3,orange,711,498,2.5,2,1
+1054,Stubentor,Landstrasse,3,orange,770,500,2.5,2,1
+1055,Landstrasse,Rochusgasse,3,orange,815,500,2.5,2,1
+1056,Rochusgasse,Kardinal-Nagl-Platz,3,orange,893,531,2.5,2,1
+1057,Kardinal-Nagl-Platz,Schlachthausgasse,3,orange,911,522,2.5,2,1
+1058,Schlachthausgasse,Erdberg,3,orange,932,570,2.5,2,1
+1059,Erdberg,Gasometer,3,orange,955,592,2.5,2,1
+1060,Gasometer,Zippererstrasse,3,orange,976,613,2.5,2,1
+1061,Zippererstrasse,Enkplatz,3,orange,995,636,2.5,2,1
+1062,Enkplatz,Simmering,3,orange,995,680,2.5,2,1
+1063,Huetteldorf,Ober St. Veit,4,green,220,616,2.5,2,1
+1064,Ober St. Veit,Unter St. Veit,4,green,248,616,2.5,2,1
+1065,Unter St. Veit,Braunschweiggasse,4,green,288,616,2.5,2,1
+1066,Braunschweiggasse,Hietzing,4,green,327,616,2.5,2,1
+1067,Hietzing,Schoenbrunn,4,green,363,616,2.5,2,1
+1068,Schoenbrunn,Meidling Haupstrasse,4,green,398,616,2.5,2,1
+1069,Meidling Haupstrasse,Laengenfeldgasse,4,green,435,616,2.5,2,1
+1070,Laengenfeldgasse,Margaretenguertel,4,green,479,616,2.5,2,1
+1071,Margaretenguertel,Pilgramgasse,4,green,529,616,2.5,2,1
+1072,Pilgramgasse,Kettenbrueckengasse,4,green,584,616,2.5,2,1
+1073,Kettenbrueckengasse,Karlsplatz,4,green,642,616,2.5,2,1
+1074,Karlsplatz,Stadtpark,4,green,710,610,2.5,2,1
+1075,Stadtpark,Landstrasse,4,green,794,587,2.5,2,1
+1076,Landstrasse,Schwedenplatz,4,green,815,500,2.5,2,1
+1077,Schwedenplatz,Schottenring,4,green,789,405,2.5,2,1
+1078,Schottenring,Rossauer Laende,4,green,724,344,2.5,2,1
+1079,Rossauer Laende,Friedensbruecke,4,green,681,298,2.5,2,1
+1080,Friedensbruecke,Spittelau,4,green,642,260,2.5,2,1
+1081,Spittelau,Heiligenstradt,4,green,614,207,2.5,2,1
+1082,Siebenhirten,Perfektastrasse,6,brown,296,926,2.5,2,1
+1083,Perfektastrasse,Erlaaer strasse,6,brown,327,895,2.5,2,1
+1084,Erlaaer strasse,Alterlaa,6,brown,359,862,2.5,2,1
+1085,Alterlaa,Am Schoepfwerk,6,brown,389,833,2.5,2,1
+1086,Am Schoepfwerk,Tschwerttegasse,6,brown,415,806,2.5,2,1
+1087,Tschwerttegasse,Bahnhof Meidling,6,brown,440,781,2.5,2,1
+1088,Bahnhof Meidling,Niederhofstrasse,6,brown,479,741,2.5,2,1
+1089,Niederhofstrasse,Laengenfeldgasse,6,brown,479,696,2.5,2,1
+1090,Laengenfeldgasse,Gumpendorfer strasse,6,brown,479,616,2.5,2,1
+1091,Gumpendorfer strasse,Westbahnhof,6,brown,479,559,2.5,2,1
+1092,Westbahnhof,Burggasse-Stadthalle,6,brown,479,499,2.5,2,1
+1093,Burggasse-Stadthalle,Thaliastrasse,6,brown,479,436,2.5,2,1
+1094,Thaliastrasse,Josefstaedter strasse,6,brown,479,397,2.5,2,1
+1095,Josefstaedter strasse,Alser strasse,6,brown,479,358,2.5,2,1
+1096,Alser strasse,Michelbeuern - AKH,6,brown,493,317,2.5,2,1
+1097,Michelbeuern - AKH,Waehringer strasse - Volksoper,6,brown,519,290,2.5,2,1
+1098,Waehringer strasse - Volksoper,Nussdorfer strasse,6,brown,548,262,2.5,2,1
+1099,Nussdorfer strasse,Spittelau,6,brown,578,231,2.5,2,1
+1100,Spittelau,Jaegerstrasse,6,brown,614,207,2.5,2,1
+1101,Jaegerstrasse,Dresdner strasse,6,brown,661,207,2.5,2,1
+1102,Dresdner strasse,Handelskai,6,brown,683,207,2.5,2,1
+1103,Handelskai,Neue Donau,6,brown,720,173,2.5,2,1
+1104,Neue Donau,Floridsdorf,6,brown,789,104,2.5,2,1

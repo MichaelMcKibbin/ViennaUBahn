@@ -27,6 +27,15 @@ public class RoutePath {
         this.numberOfStops = stops;
     }
 
+    public double calculateEuclideanDistance() {
+        double totalEuclideanDistance = 0.0;
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Station current = stations.get(i);
+            Station next = stations.get(i + 1);
+            totalEuclideanDistance += Station.euclideanDistance(current, next);
+        }
+        return totalEuclideanDistance;
+    }
 
     // Getters
     public List<Station> getStations() {

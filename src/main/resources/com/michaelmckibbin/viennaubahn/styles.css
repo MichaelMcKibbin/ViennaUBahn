@@ -68,6 +68,14 @@ VBox {
     -fx-padding: 10;
     -fx-spacing: 10;
 }
+.VBoxTight {
+    -fx-background-color: derive(-fx-secondary, 90%);
+    -fx-border-radius: 3;
+    -fx-border-width: 2;
+    -fx-border-color: -fx-secondary;
+    -fx-padding: 5;
+    -fx-spacing: 2;
+}
 
 /* Dialog styling */
 .dialog-pane {

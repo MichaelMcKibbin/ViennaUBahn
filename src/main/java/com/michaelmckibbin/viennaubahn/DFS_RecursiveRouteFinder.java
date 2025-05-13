@@ -1,9 +1,9 @@
 package com.michaelmckibbin.viennaubahn;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javafx.application.Platform;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DFS_RecursiveRouteFinder implements RouteFinder {
     private final Graph graph;
@@ -12,6 +12,9 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
     private Set<Station> visited;
     private List<Station> currentPath;
     private List<List<Station>> foundPaths;
+    private Station searchTreeRoot;
+    private Map<Station, List<Station>> searchTree = new HashMap<>();
+
 
     // Similarity, Max paths, & deviation settings
 //    private static final int MAX_PATHS = 10;
@@ -50,6 +53,8 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
     @Override
     public RoutePath findRoute(Station start, Station end, List<Station> waypoints) {
         System.out.println("Starting DFS Recursive route search...");
+        searchTreeRoot = start;  // Store the start station as the root
+        System.out.println("Set search tree root to: " + start.getName());
         nodesVisited = 0;
         maxQueueSize = 0;
 
@@ -66,6 +71,20 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
             return null;
         }
     }
+
+    public void setSearchTreeRoot(Station root) {
+        this.searchTreeRoot = root;
+        System.out.println("Search tree root set to: " + root.getName());
+    }
+
+    public Station getSearchTree() {
+        System.out.println("Getting search tree, root is: " +
+                (searchTreeRoot != null ? searchTreeRoot.getName() : "null"));
+        return searchTreeRoot;
+    }
+
+
+
 
     public List<List<Station>> findMultipleRoutes(Station start, Station end, List<Station> waypoints) {
         if (waypoints.isEmpty()) {
@@ -182,6 +201,9 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
         currentPath = new ArrayList<>();
         List<List<Station>> segmentPaths = new ArrayList<>();
 
+        // Clear the search tree before starting new search
+        searchTree.clear();
+
         // Find direct routes between two points
         dfsRecursive(start, end, Integer.MAX_VALUE, segmentPaths);
 
@@ -218,13 +240,20 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
 
         if (current.equals(end)) {
             segmentPaths.add(new ArrayList<>(currentPath));
+            // Add the current path to the search tree
+            for (int i = 0; i < currentPath.size() - 1; i++) {
+                Station from = currentPath.get(i);
+                Station to = currentPath.get(i + 1);
+                searchTree.computeIfAbsent(from, k -> new ArrayList<>()).add(to);
+                System.out.println("Added path connection: " + from.getName() + " -> " + to.getName());
+            }
         } else {
             Set<Station> neighbors = graph.getNeighbors(current);
             for (Station neighbor : neighbors) {
-//                if (!visited.contains(neighbor) && segmentPaths.size() < MAX_PATHS) {
-//                    dfsRecursive(neighbor, end, maxLength, segmentPaths);
-//                }
                 if (!visited.contains(neighbor) && segmentPaths.size() < maxPaths) {
+                    // Add this explored connection to the search tree
+                    searchTree.computeIfAbsent(current, k -> new ArrayList<>()).add(neighbor);
+                    System.out.println("Added explored connection: " + current.getName() + " -> " + neighbor.getName());
                     dfsRecursive(neighbor, end, maxLength, segmentPaths);
                 }
             }
@@ -233,6 +262,41 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
         currentPath.remove(currentPath.size() - 1);
         visited.remove(current);
     }
+
+    // clear the search tree before new searches
+    public void clearSearchTree() {
+        searchTree.clear();
+    }
+
+//
+//    private void dfsRecursive(Station current, Station end, int maxLength, List<List<Station>> segmentPaths) {
+//        if (segmentPaths.size() >= maxPaths || currentPath.size() > maxLength) {
+//            return;
+//        }
+//
+//        nodesVisited++;
+//        visited.add(current);
+//        currentPath.add(current);
+//
+//        maxQueueSize = Math.max(maxQueueSize, currentPath.size());
+//
+//        if (current.equals(end)) {
+//            segmentPaths.add(new ArrayList<>(currentPath));
+//        } else {
+//            Set<Station> neighbors = graph.getNeighbors(current);
+//            for (Station neighbor : neighbors) {
+////                if (!visited.contains(neighbor) && segmentPaths.size() < MAX_PATHS) {
+////                    dfsRecursive(neighbor, end, maxLength, segmentPaths);
+////                }
+//                if (!visited.contains(neighbor) && segmentPaths.size() < maxPaths) {
+//                    dfsRecursive(neighbor, end, maxLength, segmentPaths);
+//                }
+//            }
+//        }
+//
+//        currentPath.remove(currentPath.size() - 1);
+//        visited.remove(current);
+//    }
 
     private boolean isPathSufficientlyDifferent(List<Station> newPath) {
         if (foundPaths.isEmpty()) {
@@ -254,8 +318,12 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
         return true;
     }
 
-    public List<List<Station>> getFoundPaths() {
-        return foundPaths;
+    public List<Station> getExploredConnections(Station station) {
+        List<Station> connections = searchTree.getOrDefault(station, new ArrayList<>());
+        System.out.println("Getting explored connections for " + station.getName() +
+                ": " + connections.size() + " connections");
+        connections.forEach(s -> System.out.println("  -> " + s.getName()));
+        return connections;
     }
 
     public int getNodesVisited() {
@@ -265,4 +333,28 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
     public int getMaxQueueSize() {
         return maxQueueSize;
     }
+
+
+
+
+
+    // Make sure there's a reference to the controller
+    private Controller controller;
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+public Map<Station, List<Station>> getSearchTreeMap() {
+    System.out.println("\nDumping search tree contents:");
+    searchTree.forEach((station, connections) -> {
+        System.out.println(station.getName() + " connects to:");
+        connections.forEach(conn -> System.out.println("  -> " + conn.getName()));
+    });
+    return new HashMap<>(searchTree);
+}
+
+
+
+
 }

@@ -1,13 +1,15 @@
 package com.michaelmckibbin.viennaubahn;
 
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 public class RouteMetricsDisplay {
-    private final Label stopsLabel;
-    private final Label timeLabel;
-    private final Label nodesLabel;
-    private final Label queueLabel;
+    @FXML private Label stopsLabel;
+    @FXML private Label timeLabel;
+    @FXML private Label nodesLabel;
+    @FXML private Label queueLabel;
+    @FXML private Label euclideanDistLabel;
 
     public RouteMetricsDisplay(Label stopsLabel, Label timeLabel,
                                Label nodesLabel, Label queueLabel) {
@@ -35,6 +37,7 @@ public class RouteMetricsDisplay {
             }
             nodesLabel.setText("Nodes Visited: " + nodesVisited);
             queueLabel.setText("Max Queue Size: " + maxQueueSize);
+
         });
 
         // Detailed console output
