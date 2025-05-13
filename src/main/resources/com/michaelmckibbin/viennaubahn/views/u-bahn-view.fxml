@@ -102,11 +102,15 @@
 
                     </VBox>
 
-                    <HBox alignment="CENTER" spacing="10">
+                    <VBox alignment="CENTER" spacing="10">
                         <Button fx:id="previousRouteButton" disable="true" onAction="#handlePreviousRoute" text="Previous Route" />
                         <Label fx:id="routeNumberLabel" text="Route 1 of 1" />
                         <Button fx:id="nextRouteButton" disable="true" onAction="#handleNextRoute" text="Next Route" />
-                    </HBox>
+                    </VBox>
+                    <VBox>
+                        <Label text="Penalty" />
+                        <TextField fx:id="lineChangePenalty" prefWidth="60" text="5" />
+                    </VBox>
                     <VBox spacing="5">
                         <Label text="Max Paths" />
                         <TextField fx:id="maxPathsField" prefWidth="60" text="10" />
