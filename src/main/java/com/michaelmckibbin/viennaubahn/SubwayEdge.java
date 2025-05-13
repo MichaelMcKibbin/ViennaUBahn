@@ -8,6 +8,7 @@ public class SubwayEdge {
     private final double distance;     // Keep as double
     private final double cost;         // Keep as double
 
+
     public SubwayEdge(String edgeId, Station fromStation, Station toStation,
                       int travelTime, double distance, double cost) {
         this.edgeId = edgeId;
