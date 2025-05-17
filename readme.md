@@ -10,9 +10,12 @@ Specifically the Vienna U-Bahn in this instance.
 
 ## How It Works
 
-The process includes these steps:
+The process includes:
 
-   - 
+   - Station details and attributes are loaded from a database.
+   - A Graph data structure is created which stores information about stations, lines, and connections between them.
+   -  uses an adjacency list to store the connections.
+   - The class also provides methods for BFS algorithm and path finding.
 
    <br>
 

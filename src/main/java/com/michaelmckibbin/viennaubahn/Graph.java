@@ -10,37 +10,70 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * This class represents a graph of stations and connections between them.
- * It uses an adjacency list to store the connections and provides methods
- * to add stations, connections, and lines.
+ * This class represents a graph data structure for the Vienna U-Bahn network
+ * of stations and connections between them.
+ * This class implements the Initializable interface, and manages stations,
+ * their connections, and line information.
+ * It uses an adjacency list to store the connections.
+ * The class also provides methods for BFS algorithm and path finding.
  */
 public class Graph implements Initializable {
     // A static graph object to represent the graph
     public static Graph graph;
 
-    // A station adjacency list to represent vertices on the graph
+    /**
+     * Adjacency list representing the connections (vertices) between stations.
+     * Each station maps to a list of its connected stations.
+     */
     private Map<Station, List<Station>> adjacencyList;
 
-    // Map to store lines and their colors
+    /**
+     * Maps U-Bahn line names to their corresponding colors.
+     * For example, "U1" -> "RED"
+     */
     private Map<String, String> lineColors;
 
+    /**
+     * Maps station names to Station objects for quick lookup.
+     */
     private static Map<String, Station> stationMap = new HashMap<>();
 
-    // Static method to get a station by name
+    /**
+     * Retrieves a station by its name.
+     *
+     * @param stationName the name of the station to retrieve
+     * @return the Station object if found, null otherwise
+     */
     public static Station getStation(String stationName) {
         return stationMap.get(stationName);
     }
 
-    // Method to register a station in the map
+    /**
+     * Registers a new station in the station map.
+     *
+     * @param station the Station object to register
+     */
     public static void registerStation(Station station) {
         stationMap.put(station.getName(), station);
     }
 
+    /**
+     * Constructs a new Graph instance.
+     * Initializes the adjacency list and line colors map.
+     */
     public Graph() {
         adjacencyList = new HashMap<>();
         lineColors = new HashMap<>();
     }
 
+
+    /**
+     * Initializes the graph as part of the JavaFX initialization process.
+     * Creates the singleton instance if it doesn't exist.
+     *
+     * @param url the location used to resolve relative paths for the root object
+     * @param resourceBundle the resources used to localize the root object
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (graph == null) {
@@ -48,14 +81,24 @@ public class Graph implements Initializable {
         }
     }
 
-    // Add a station to the graph
+    /**
+     * Adds a new station to the graph.
+     * If the station already exists, it will not create a duplicate entry.
+     *
+     * @param station the Station object to add to the graph
+     */
     public void addStation(Station station) {
         if (!adjacencyList.containsKey(station)) {
             adjacencyList.put(station, new ArrayList<>());
         }
     }
 
-    // Add a connection between two stations
+    /**
+     * Adds a bidirectional connection between two stations.
+     *
+     * @param station1 the first station to connect
+     * @param station2 the second station to connect
+     */
     public void addConnection(Station station1, Station station2) {
         addStation(station1);
         addStation(station2);
@@ -164,6 +207,9 @@ public class Graph implements Initializable {
 
         // Work backwards from end to start
         while (current != null) {
+            System.out.println("Adding to path: " + current.getName() +
+                    " at (" + current.getX() + "," + current.getY() + ")");
+
             pathStations.add(0, current);  // Add to front of list
             current = previous.get(current);
         }
@@ -262,6 +308,91 @@ public class Graph implements Initializable {
 
         } catch (IOException e) {
             System.err.println("Error loading graph from CSV: " + e.getMessage());
+        }
+    }
+
+    public RoutePath findShortestPath(Station start, Station end) {
+        System.out.println("Dijkstra Search initiated...");
+        System.out.println("Finding route from " + start.getName() + " to " + end.getName());
+        System.out.println("Number of stations in graph: " + adjacencyList.keySet().size());
+
+        // Initialize data structures
+        Map<Station, Double> distances = new HashMap<>();
+        Map<Station, Station> previous = new HashMap<>();
+        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingDouble(Node::getDistance));
+        Set<Station> visited = new HashSet<>();
+
+        // Initialize distances
+        for (Station station : adjacencyList.keySet()) {
+            distances.put(station, Double.POSITIVE_INFINITY);
+        }
+        distances.put(start, 0.0);
+        pq.add(new Node(start, 0.0));
+
+        // Performance metrics
+        long startTime = System.nanoTime();
+        int nodesVisited = 0;
+        int maxQueueSize = 0;
+
+        while (!pq.isEmpty()) {
+            maxQueueSize = Math.max(maxQueueSize, pq.size());
+            Node currentNode = pq.poll();
+            Station current = currentNode.getStation();
+            nodesVisited++;
+
+            if (current.equals(end)) {
+                // Path found, build the route
+                List<Station> pathStations = new ArrayList<>();
+                Station temp = end;
+                while (temp != null) {
+                    pathStations.add(0, temp);
+                    temp = previous.get(temp);
+                }
+
+                long endTime = System.nanoTime();
+                RoutePath route = new RoutePath(pathStations, endTime - startTime, nodesVisited, maxQueueSize);
+                System.out.println("Path found with " + pathStations.size() + " stations");
+                return route;
+            }
+
+            if (visited.contains(current)) {
+                continue;
+            }
+            visited.add(current);
+
+            // Check all neighbors
+            for (Station neighbor : getNeighbors(current)) {
+                if (!visited.contains(neighbor)) {
+                    double newDistance = distances.get(current) + Station.euclideanDistance(current, neighbor);
+
+                    if (newDistance < distances.get(neighbor)) {
+                        distances.put(neighbor, newDistance);
+                        previous.put(neighbor, current);
+                        pq.add(new Node(neighbor, newDistance));
+                    }
+                }
+            }
+        }
+
+        return null; // No path found
+    }
+
+    // Helper class for Dijkstra's algorithm
+    private static class Node {
+        private final Station station;
+        private final double distance;
+
+        public Node(Station station, double distance) {
+            this.station = station;
+            this.distance = distance;
+        }
+
+        public Station getStation() {
+            return station;
+        }
+
+        public double getDistance() {
+            return distance;
         }
     }
 }

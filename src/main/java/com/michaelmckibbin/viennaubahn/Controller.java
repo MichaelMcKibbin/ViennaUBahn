@@ -236,6 +236,7 @@ lineChangePenalty.textProperty().addListener((observable, oldValue, newValue) ->
 
 @FXML
 private void handleFindRouteDijkstra() {
+        try{
     System.out.println("Dijkstra Search initiated...");
     clearRouteDisplay();
     currentRouteFinder = dijkstraRouteFinder;
@@ -250,6 +251,25 @@ private void handleFindRouteDijkstra() {
     long endTime = System.nanoTime();
 
     if (routePath != null) {
+        // Add detailed path debugging information
+        routePath.printPathDetails();
+
+        // Verify path continuity and alert if there are issues
+        if (!routePath.verifyPathContinuity()) {
+            System.out.println("WARNING: Possible discontinuities detected in the route!");
+            // Print the problematic segments
+            List<Station> stations = routePath.getStations();
+            for (int i = 0; i < stations.size() - 1; i++) {
+                Station current = stations.get(i);
+                Station next = stations.get(i + 1);
+                double segmentDistance = Station.euclideanDistance(current, next);
+                System.out.printf("Segment %d-%d: %s to %s, distance: %.2f%n",
+                    i, i+1, current.getName(), next.getName(), segmentDistance);
+                System.out.printf("  Coordinates: (%d,%d) to (%d,%d)%n",
+                    current.getX(), current.getY(), next.getX(), next.getY());
+            }
+        }
+
         // Calculate, scale, and print route Euclidean distance
         double euclideanDistance = calculateEuclideanDistance(routePath.getStations());
         double scaledDistance = euclideanDistance / 55;
@@ -266,6 +286,19 @@ private void handleFindRouteDijkstra() {
 
         System.out.printf("Direct ('as crow flies') Distance: %.3f km%n", directDistance);
 
+        // Print route efficiency metric
+        double routeEfficiency = (directDistance / scaledDistance) * 100;
+        System.out.printf("Route Efficiency: %.1f%% (100%% would be a straight line)%n",
+            routeEfficiency);
+
+        // Print detailed station-by-station coordinates
+        System.out.println("\nDetailed Station Coordinates:");
+        for (int i = 0; i < stations.size(); i++) {
+            Station station = stations.get(i);
+            System.out.printf("Station %d: %s at (%d,%d)%n",
+                i, station.getName(), station.getX(), station.getY());
+        }
+
         // Update the regular metrics display
         metricsDisplay.updateMetrics(
                 routePath.getNumberOfStops(),
@@ -273,48 +306,58 @@ private void handleFindRouteDijkstra() {
                 routePath.getNodesVisited(),
                 routePath.getMaxQueueSize()
         );
+    } else {
+        System.out.println("No route found!");
     }
+        } catch (Exception e) {
+            System.err.println("Error in handleFindRouteDijkstra: " + e.getMessage());
+            e.printStackTrace();
+        }
 }
 
-
-
-//    @FXML
-//    private void handleFindRouteDijkstra() {
-//        System.out.println("Dijkstra Search initiated...");
-//        clearRouteDisplay();
-//        currentRouteFinder = dijkstraRouteFinder;
+//@FXML
+//private void handleFindRouteDijkstra() {
+//    System.out.println("Dijkstra Search initiated...");
+//    clearRouteDisplay();
+//    currentRouteFinder = dijkstraRouteFinder;
 //
-//        long startTime = System.nanoTime();
-//        RoutePath routePath = findAndDisplayRoute();
-//        long endTime = System.nanoTime();
-//
-//        if (routePath != null) {
-//            // Calculate, scale, and print route Euclidean distance
-//            double euclideanDistance = calculateEuclideanDistance(routePath.getStations());
-//            double scaledDistance = euclideanDistance / 55;
-//            System.out.printf("Route Euclidean Distance: %.3f km%n", scaledDistance);
-//
-//            // Calculate 'as the crow flies' distance between start and end stations
-//            List<Station> stations = routePath.getStations();
-//            Station startStation = stations.get(0);
-//            Station endStation = stations.get(stations.size() - 1);
-//            double directDistance = Math.sqrt(
-//                    Math.pow(endStation.getX() - startStation.getX(), 2) +
-//                            Math.pow(endStation.getY() - startStation.getY(), 2)
-//            ) / 55;  // Apply same scaling factor
-//
-//            System.out.printf("Direct ('as crow flies') Distance: %.3f km%n", directDistance);
-//
-//
-//            // Update the regular metrics display
-//            metricsDisplay.updateMetrics(
-//                    routePath.getNumberOfStops(),
-//                    endTime - startTime,
-//                    routePath.getNodesVisited(),
-//                    routePath.getMaxQueueSize()
-//            );
-//        }
+//    // Update the line change penalty before finding route
+//    if (dijkstraRouteFinder != null) {
+//        dijkstraRouteFinder.setLineChangePenalty(getLineChangePenalty());
 //    }
+//
+//    long startTime = System.nanoTime();
+//    RoutePath routePath = findAndDisplayRoute();
+//    long endTime = System.nanoTime();
+//
+//    if (routePath != null) {
+//        // Calculate, scale, and print route Euclidean distance
+//        double euclideanDistance = calculateEuclideanDistance(routePath.getStations());
+//        double scaledDistance = euclideanDistance / 55;
+//        System.out.printf("Route Euclidean Distance: %.3f km%n", scaledDistance);
+//
+//        // Calculate 'as the crow flies' distance between start and end stations
+//        List<Station> stations = routePath.getStations();
+//        Station startStation = stations.get(0);
+//        Station endStation = stations.get(stations.size() - 1);
+//        double directDistance = Math.sqrt(
+//                Math.pow(endStation.getX() - startStation.getX(), 2) +
+//                        Math.pow(endStation.getY() - startStation.getY(), 2)
+//        ) / 55;  // Apply same scaling factor
+//
+//        System.out.printf("Direct ('as crow flies') Distance: %.3f km%n", directDistance);
+//
+//        // Update the regular metrics display
+//        metricsDisplay.updateMetrics(
+//                routePath.getNumberOfStops(),
+//                endTime - startTime,
+//                routePath.getNodesVisited(),
+//                routePath.getMaxQueueSize()
+//        );
+//    }
+//}
+
+
 
     private void setupLineChangePenaltyField() {
         // Only allow numbers and decimal point
@@ -324,13 +367,7 @@ private void handleFindRouteDijkstra() {
             }
         });
     }
-//    private void handleFindRouteDijkstra() {
-//        System.out.println("Dijkstra Search initiated...");
-//        System.out.println("Using metric: " + getCurrentMetricName());
-//        clearRouteDisplay();
-//        currentRouteFinder = dijkstraRouteFinder;
-//        findAndDisplayRoute();
-//    }
+
 
     private String getCurrentMetricName() {
         if (distanceRadio.isSelected()) return "Distance";
