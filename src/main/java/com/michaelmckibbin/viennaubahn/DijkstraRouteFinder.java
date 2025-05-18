@@ -20,7 +20,6 @@ public class DijkstraRouteFinder implements RouteFinder {
     //private final double LINE_CHANGE_PENALTY = 5.0; // Adjust as needed
     private double lineChangePenalty = 5.0; // default value
 
-
     public DijkstraRouteFinder(Graph graph) {
         this.graph = graph;
         this.adjacencyList = new HashMap<>();
@@ -99,78 +98,6 @@ public class DijkstraRouteFinder implements RouteFinder {
     }
 }
 
-
-
-//    private void loadEdgeData() {
-//    try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-//            getClass().getResourceAsStream("/com/michaelmckibbin/viennaubahn/data/vienna_subway_dijkstras.csv")))) {
-//
-//        String line = reader.readLine(); // Skip header
-//        System.out.println("Header line: " + line); // Debug
-//        int lineCount = 0;
-//
-//        while ((line = reader.readLine()) != null) {
-//            lineCount++;
-//            String[] data = line.split(",");
-//
-//            // Debug output
-//            System.out.println("Processing line " + lineCount + ": " + line);
-//
-//            String edgeId = data[0].trim();
-//            String fromStationName = data[1].trim();
-//            String toStationName = data[2].trim();
-//            String lineNumber = data[3].trim();
-//            String lineColor = data[4].trim();
-//
-//            // Debug station names
-//            System.out.println("Adding edge from " + fromStationName + " to " + toStationName);
-//
-//            // Convert coordinates to integers (round or floor if needed)
-//            int x = (int)Double.parseDouble(data[5].trim());
-//            int y = (int)Double.parseDouble(data[6].trim());
-//
-//            // Use double for measurements that might have decimal places
-//            double travelTime = Double.parseDouble(data[7].trim());
-//            double distance = Double.parseDouble(data[8].trim());
-//            double cost = Double.parseDouble(data[9].trim());
-//
-//            // Create or get stations
-//            Station fromStation = stationMap.computeIfAbsent(fromStationName,
-//                name -> new Station(name, lineNumber, lineColor, x, y));
-//            Station toStation = stationMap.computeIfAbsent(toStationName,
-//                name -> new Station(name, lineNumber, lineColor, x, y));
-//
-//            // Create edge with travel time as int if needed
-//            SubwayEdge edge = new SubwayEdge(edgeId, fromStation, toStation,
-//                                           (int)travelTime, distance, cost);
-//
-//            // Add to adjacency list and create reverse edge for bidirectional travel
-//            adjacencyList.computeIfAbsent(fromStationName, k -> new ArrayList<>()).add(edge);
-//
-//            // Create reverse edge with same properties
-//            SubwayEdge reverseEdge = new SubwayEdge(edgeId + "_rev", toStation, fromStation,
-//                    (int)travelTime, distance, cost);
-//            adjacencyList.computeIfAbsent(toStationName, k -> new ArrayList<>()).add(reverseEdge);
-//        }
-//
-//        // Debug output after loading
-//        System.out.println("Loaded " + lineCount + " edges");
-//        System.out.println("Number of stations: " + stationMap.size());
-//        System.out.println("Adjacency list size: " + adjacencyList.size());
-//
-//        // Print some sample connections
-//        adjacencyList.forEach((station, edges) -> {
-//            System.out.println("Station " + station + " has " + edges.size() + " connections to: " +
-//                    edges.stream()
-//                            .map(e -> e.getToStation().getName())
-//                            .collect(Collectors.joining(", ")));
-//        });
-//
-//    } catch (IOException | NumberFormatException e) {
-//        System.err.println("Error reading edge data: " + e.getMessage());
-//        e.printStackTrace();
-//    }
-//}
     @Override
     public RoutePath findRoute(Station start, Station end, List<Station> waypoints) {
         if (waypoints.isEmpty()) {
