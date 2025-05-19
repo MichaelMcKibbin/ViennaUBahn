@@ -1,0 +1,110 @@
+edge_id,station_name,line_number,line_color,x_coordinate,y_coordinate,edge_travel_time,edge_distance,edge_cost
+1001,Oberlaa,U1,RED,832,956,2.5,2,1
+1002,Neulaa,U1,RED,810,934,2.5,2,1
+1003,Alaudagasse,U1,RED,790,912,2.5,2,1
+1004,Altes Landgut,U1,RED,768,891,2.5,2,1
+1005,Troststrasse,U1,RED,745,868,2.5,2,1
+1006,Reumannplatz,U1,RED,722,846,2.5,2,1
+1007,Keplerplatz,U1,RED,712,810,2.5,2,1
+1008,Suedtiroler Platz - Hauptbahnhof,U1,RED,712,748,2.5,2,1
+1009,Taubstummengasse,U1,RED,712,680,2.5,2,1
+1010,Karlsplatz,U1,RED,712,610,2.5,2,1
+1011,Stephansplatz,U1,RED,712,498,2.5,2,1
+1012,Schwedenplatz,U1,RED,789,405,2.5,2,1
+1013,Nestroyplatz,U1,RED,820,374,2.5,2,1
+1014,Praterstern,U1,RED,850,343,2.5,2,1
+1015,Vorgartenstrasse,U1,RED,883,311,2.5,2,1
+1016,Donauinsel,U1,RED,920,273,2.5,2,1
+1017,Kaisermuehlen/VIC,U1,RED,946,250,2.5,2,1
+1018,Alte Donau,U1,RED,966,228,2.5,2,1
+1019,Kagran,U1,RED,996,198,2.5,2,1
+1020,Kagraner Platz,U1,RED,1019,176,2.5,2,1
+1021,Rennbahnweg,U1,RED,1040,155,2.5,2,1
+1022,Aderklaaer strasse,U1,RED,1063,132,2.5,2,1
+1023,Grossfeldsiedlung,U1,RED,1086,107,2.5,2,1
+1024,Leopoldau,U1,RED,1113,82,2.5,2,1
+1025,Seestadt,U2,PURPLE,1378,395,2.5,2,1
+1026,Aspern Nord,U2,PURPLE,1363,329,2.5,2,1
+1027,Hausfeldstrasse,U2,PURPLE,1319,329,2.5,2,1
+1028,Aspernstrasse,U2,PURPLE,1288,358,2.5,2,1
+1029,Donauspital,U2,PURPLE,1250,395,2.5,2,1
+1030,Hardeggasse,U2,PURPLE,1203,395,2.5,2,1
+1031,Stadlau,U2,PURPLE,1166,419,2.5,2,1
+1032,Donaustadtbruecke,U2,PURPLE,1135,452,2.5,2,1
+1033,Donaumarina,U2,PURPLE,1056,500,2.5,2,1
+1034,Stadion,U2,PURPLE,986,432,2.5,2,1
+1035,Krieau,U2,PURPLE,947,395,2.5,2,1
+1036,Messe-Prater,U2,PURPLE,916,365,2.5,2,1
+1037,Praterstern,U2,PURPLE,850,343,2.5,2,1
+1038,Taborstrasse,U2,PURPLE,789,344,2.5,2,1
+1039,Schottenring,U2,PURPLE,724,344,2.5,2,1
+1040,Schottentor,U2,PURPLE,665,394,2.5,2,1
+1041,Rathaus,U2,PURPLE,625,432,2.5,2,1
+1042,Volkstheater,U2,PURPLE,600,500,2.5,2,1
+1043,Museumsquartier,U2,PURPLE,627,568,2.5,2,1
+1044,Karlsplatz,U2,PURPLE,712,610,2.5,2,1
+1045,Ottakring,U3,ORANGE,334,356,2.5,2,1
+1046,Kendlerstrasse,U3,ORANGE,362,385,2.5,2,1
+1047,Huetteldorfer strasse,U3,ORANGE,383,407,2.5,2,1
+1048,Johnstrasse,U3,ORANGE,412,435,2.5,2,1
+1049,Schweglerstrasse,U3,ORANGE,438,461,2.5,2,1
+1050,Westbahnhof,U3,ORANGE,479,499,2.5,2,1
+1051,Zieglergasse,U3,ORANGE,522,500,2.5,2,1
+1052,Neubaugasse,U3,ORANGE,558,500,2.5,2,1
+1053,Volkstheater,U3,ORANGE,600,500,2.5,2,1
+1054,Herrengasse,U3,ORANGE,667,500,2.5,2,1
+1055,Stephansplatz,U3,ORANGE,711,498,2.5,2,1
+1056,Stubentor,U3,ORANGE,770,500,2.5,2,1
+1057,Landstrasse,U3,ORANGE,815,500,2.5,2,1
+1058,Rochusgasse,U3,ORANGE,893,531,2.5,2,1
+1059,Kardinal-Nagl-Platz,U3,ORANGE,911,552,2.5,2,1
+1060,Schlachthausgasse,U3,ORANGE,932,570,2.5,2,1
+1061,Erdberg,U3,ORANGE,955,592,2.5,2,1
+1062,Gasometer,U3,ORANGE,976,613,2.5,2,1
+1063,Zippererstrasse,U3,ORANGE,995,636,2.5,2,1
+1064,Enkplatz,U3,ORANGE,995,680,2.5,2,1
+1065,Simmering,U3,ORANGE,995,753,2.5,2,1
+1066,Huetteldorf,U4,GREEN,220,616,2.5,2,1
+1067,Ober St. Veit,U4,GREEN,248,616,2.5,2,1
+1068,Unter St. Veit,U4,GREEN,288,616,2.5,2,1
+1069,Braunschweiggasse,U4,GREEN,327,616,2.5,2,1
+1070,Hietzing,U4,GREEN,363,616,2.5,2,1
+1071,Schoenbrunn,U4,GREEN,398,616,2.5,2,1
+1072,Meidling Haupstrasse,U4,GREEN,435,616,2.5,2,1
+1073,Laengenfeldgasse,U4,GREEN,479,616,2.5,2,1
+1074,Margaretenguertel,U4,GREEN,529,616,2.5,2,1
+1075,Pilgramgasse,U4,GREEN,584,616,2.5,2,1
+1076,Kettenbrueckengasse,U4,GREEN,642,616,2.5,2,1
+1077,Karlsplatz,U4,GREEN,712,610,2.5,2,1
+1078,Stadtpark,U4,GREEN,794,587,2.5,2,1
+1079,Landstrasse,U4,GREEN,815,500,2.5,2,1
+1080,Schwedenplatz,U4,GREEN,789,405,2.5,2,1
+1081,Schottenring,U4,GREEN,724,344,2.5,2,1
+1082,Rossauer Laende,U4,GREEN,681,298,2.5,2,1
+1083,Friedensbruecke,U4,GREEN,642,260,2.5,2,1
+1084,Spittelau,U4,GREEN,614,207,2.5,2,1
+1085,Heiligenstradt,U4,GREEN,614,141,2.5,2,1
+1086,Siebenhirten,U6,BROWN,296,926,2.5,2,1
+1087,Perfektastrasse,U6,BROWN,327,895,2.5,2,1
+1088,Erlaaer strasse,U6,BROWN,359,862,2.5,2,1
+1089,Alterlaa,U6,BROWN,389,833,2.5,2,1
+1090,Am Schoepfwerk,U6,BROWN,415,806,2.5,2,1
+1091,Tschwerttegasse,U6,BROWN,440,781,2.5,2,1
+1092,Bahnhof Meidling,U6,BROWN,479,741,2.5,2,1
+1093,Niederhofstrasse,U6,BROWN,479,696,2.5,2,1
+1094,Laengenfeldgasse,U6,BROWN,479,616,2.5,2,1
+1095,Gumpendorfer strasse,U6,BROWN,479,559,2.5,2,1
+1096,Westbahnhof,U6,BROWN,479,499,2.5,2,1
+1097,Burggasse-Stadthalle,U6,BROWN,479,436,2.5,2,1
+1098,Thaliastrasse,U6,BROWN,479,397,2.5,2,1
+1099,Josefstaedter strasse,U6,BROWN,479,358,2.5,2,1
+1100,Alser strasse,U6,BROWN,493,317,2.5,2,1
+1101,Michelbeuern - AKH,U6,BROWN,519,290,2.5,2,1
+1102,Waehringer strasse - Volksoper,U6,BROWN,548,262,2.5,2,1
+1103,Nussdorfer strasse,U6,BROWN,578,231,2.5,2,1
+1104,Spittelau,U6,BROWN,614,207,2.5,2,1
+1105,Jaegerstrasse,U6,BROWN,661,207,2.5,2,1
+1106,Dresdner strasse,U6,BROWN,683,207,2.5,2,1
+1107,Handelskai,U6,BROWN,720,173,2.5,2,1
+1108,Neue Donau,U6,BROWN,789,104,2.5,2,1
+1109,Floridsdorf,U6,BROWN,810,83,2.5,2,1

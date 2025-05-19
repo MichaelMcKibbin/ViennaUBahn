@@ -1,110 +1,39 @@
 package com.michaelmckibbin.viennaubahn;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
-import java.util.stream.Collectors;
+import javafx.scene.Node;
+import javafx.scene.shape.Line;
 
-/**
- * This class implements the Dijkstra algorithm to find the shortest path between two stations.
- * It uses a priority queue to efficiently select the next station to visit based on the current
- * shortest distance to that station.
- */
+import java.util.*;
+
 public class DijkstraRouteFinder implements RouteFinder {
     private final Graph graph;
-    private Map<String, List<SubwayEdge>> adjacencyList;
-    private Map<String, Station> stationMap;
-    private RouteMetric currentMetric = RouteMetric.DISTANCE; // default metric
-    //private final double LINE_CHANGE_PENALTY = 5.0; // Adjust as needed
-    private double lineChangePenalty = 5.0; // default value
+    private double lineChangePenalty = 1.0; // Default penalty for changing lines
+    private int nodesVisited = 0;
+    private int maxQueueSize = 0;
+    private RouteMetric currentMetric = RouteMetric.DISTANCE; // Default metric
+
+
+    // setter
+    public void setRouteMetric(RouteMetric metric) {
+        this.currentMetric = metric;
+    }
 
     public DijkstraRouteFinder(Graph graph) {
         this.graph = graph;
-        this.adjacencyList = new HashMap<>();
-        this.stationMap = new HashMap<>();
-        loadEdgeData();
     }
 
-    private void loadEdgeData() {
-    try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-            getClass().getResourceAsStream("/com/michaelmckibbin/viennaubahn/data/vienna_subway_dijkstras.csv")))) {
-
-        String line = reader.readLine(); // Skip header
-        System.out.println("Header line: " + line); // Debug
-        int lineCount = 0;
-
-        while ((line = reader.readLine()) != null) {
-            lineCount++;
-            String[] data = line.split(",");
-
-            // Debug output
-            System.out.println("Processing line " + lineCount + ": " + line);
-
-            String edgeId = data[0].trim();
-            String fromStationName = data[1].trim();
-            String toStationName = data[2].trim();
-            String lineNumber = data[3].trim();
-            String lineColor = data[4].trim();
-
-            // Debug station names
-            System.out.println("Adding edge from " + fromStationName + " to " + toStationName);
-
-            // Convert coordinates to integers (round or floor if needed)
-            int x = (int)Double.parseDouble(data[5].trim());
-            int y = (int)Double.parseDouble(data[6].trim());
-
-            // Use double for measurements that might have decimal places
-            double travelTime = Double.parseDouble(data[7].trim());
-            double distance = Double.parseDouble(data[8].trim());
-            double cost = Double.parseDouble(data[9].trim());
-
-            // Create or get stations
-            Station fromStation = stationMap.computeIfAbsent(fromStationName,
-                name -> new Station(name, lineNumber, lineColor, x, y));
-            Station toStation = stationMap.computeIfAbsent(toStationName,
-                name -> new Station(name, lineNumber, lineColor, x, y));
-
-            // Create edge with travel time as int if needed and include lineNumber
-            SubwayEdge edge = new SubwayEdge(edgeId, fromStation, toStation,
-                                           (int)travelTime, distance, cost, lineNumber);
-
-            // Add to adjacency list and create reverse edge for bidirectional travel
-            adjacencyList.computeIfAbsent(fromStationName, k -> new ArrayList<>()).add(edge);
-
-            // Create reverse edge with same properties
-            SubwayEdge reverseEdge = new SubwayEdge(edgeId + "_rev", toStation, fromStation,
-                    (int)travelTime, distance, cost, lineNumber);
-            adjacencyList.computeIfAbsent(toStationName, k -> new ArrayList<>()).add(reverseEdge);
-        }
-
-        // Debug output after loading
-        System.out.println("Loaded " + lineCount + " edges");
-        System.out.println("Number of stations: " + stationMap.size());
-        System.out.println("Adjacency list size: " + adjacencyList.size());
-
-        // Print some sample connections
-        adjacencyList.forEach((station, edges) -> {
-            System.out.println("Station " + station + " has " + edges.size() + " connections to: " +
-                    edges.stream()
-                            .map(e -> e.getToStation().getName())
-                            .collect(Collectors.joining(", ")));
-        });
-
-    } catch (IOException | NumberFormatException e) {
-        System.err.println("Error reading edge data: " + e.getMessage());
-        e.printStackTrace();
+    public void setLineChangePenalty(double penalty) {
+        this.lineChangePenalty = penalty;
     }
-}
 
-    @Override
     public RoutePath findRoute(Station start, Station end, List<Station> waypoints) {
-        if (waypoints.isEmpty()) {
-            return findShortestPath(start, end);
-        }
+    // Validate start and end stations
+    if (start == null || end == null) {
+        return null;
+    }
 
-        // Handle waypoints by finding paths between consecutive points
+    // Handle waypoints
+    if (waypoints != null && !waypoints.isEmpty()) {
         List<Station> allPoints = new ArrayList<>();
         allPoints.add(start);
         allPoints.addAll(waypoints);
@@ -113,15 +42,26 @@ public class DijkstraRouteFinder implements RouteFinder {
         List<Station> completePath = new ArrayList<>();
         int totalNodesVisited = 0;
         int maxQueueSize = 0;
+        long startTime = System.nanoTime(); // Start timing here
 
+        // Find route through each waypoint in sequence
         for (int i = 0; i < allPoints.size() - 1; i++) {
-            RoutePath segment = findShortestPath(allPoints.get(i), allPoints.get(i + 1));
-            if (segment == null) return null;
+            Station currentStart = allPoints.get(i);
+            Station currentEnd = allPoints.get(i + 1);
 
-            if (i > 0) {
-                // Remove first station to avoid duplicates when connecting paths
-                completePath.addAll(segment.getStations().subList(1, segment.getStations().size()));
+            RoutePath segment = findDirectRoute(currentStart, currentEnd);
+
+            if (segment == null) {
+                System.out.println("No route found between " + currentStart.getName() +
+                                 " and " + currentEnd.getName());
+                return null;
+            }
+
+            // Add all stations except the last one (to avoid duplicates)
+            if (i < allPoints.size() - 2) {
+                completePath.addAll(segment.getStations().subList(0, segment.getStations().size() - 1));
             } else {
+                // For the last segment, add all stations
                 completePath.addAll(segment.getStations());
             }
 
@@ -129,110 +69,226 @@ public class DijkstraRouteFinder implements RouteFinder {
             maxQueueSize = Math.max(maxQueueSize, segment.getMaxQueueSize());
         }
 
-        return new RoutePath(completePath, 0L, totalNodesVisited, maxQueueSize);
+        long endTime = System.nanoTime(); // End timing here
+        return new RoutePath(completePath, endTime - startTime, totalNodesVisited, maxQueueSize);
     }
 
-    private double getEdgeWeight(SubwayEdge edge, RouteMetric metric, String currentLine) {
-        double weight = switch (metric) {
-            case DISTANCE -> edge.getDistance();
-            case TIME -> edge.getTravelTime();
-            case COST -> edge.getCost();
-        };
+    // If no waypoints, use direct route finding
+    return findDirectRoute(start, end);
+}
 
-        // Add line change penalty if changing lines
-        if (currentLine != null && !currentLine.equals(edge.getLine())) {
-            weight += lineChangePenalty;
-        }
+private RoutePath findDirectRoute(Station start, Station end) {
+    // Reset metrics
+    nodesVisited = 0;
+    maxQueueSize = 0;
+    long startTime = System.nanoTime(); // Start timing here
 
-        return weight;
+    // Initialize data structures
+    Map<Station, Double> distances = new HashMap<>();
+    Map<Station, Station> previous = new HashMap<>();
+    PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingDouble(Node::getDistance));
+    Set<Station> visited = new HashSet<>();
+
+    // Initialize all distances to infinity
+    Set<Station> allStations = graph.getAllStations();
+    for (Station station : allStations) {
+        distances.put(station, Double.POSITIVE_INFINITY);
     }
 
-    private RoutePath findShortestPath(Station start, Station end) {
-        System.out.println("Starting Dijkstra search from " + start.getName() + " to " + end.getName());
-        System.out.println("Number of stations in graph: " + stationMap.size());
+    // Set start distance to 0 and add to queue
+    distances.put(start, 0.0);
+    pq.add(new Node(start, 0.0));
 
-        Map<String, Double> distances = new HashMap<>();
-        Map<String, Station> previousStations = new HashMap<>();
-        Map<String, String> currentLines = new HashMap<>(); // Track current line for each station
-        PriorityQueue<Station> queue = new PriorityQueue<>(
-                (a, b) -> Double.compare(distances.getOrDefault(a.getName(), Double.MAX_VALUE),
-                        distances.getOrDefault(b.getName(), Double.MAX_VALUE)));
-        Set<String> visited = new HashSet<>();
-        int nodesVisited = 0;
-        int maxQueueSize = 0;
 
-        // Initialize distances
-        for (String stationName : stationMap.keySet()) {
-            distances.put(stationName, Double.MAX_VALUE);
+
+    while (!pq.isEmpty()) {
+        maxQueueSize = Math.max(maxQueueSize, pq.size());
+        Node currentNode = pq.poll();
+        Station current = currentNode.station;
+        nodesVisited++;
+
+        if (current.equals(end)) {
+            break; // Found the destination
         }
-        distances.put(start.getName(), 0.0);
-        currentLines.put(start.getName(), null); // Start with no line
-        queue.offer(start);
 
-        while (!queue.isEmpty()) {
-            maxQueueSize = Math.max(maxQueueSize, queue.size());
-            Station current = queue.poll();
-            nodesVisited++;
+        if (visited.contains(current)) {
+            continue;
+        }
+        visited.add(current);
 
-            if (current.getName().equals(end.getName())) {
-                break;
-            }
+        // Process all neighbors
+        for (Station neighbor : graph.getNeighbors(current)) {
+            if (!visited.contains(neighbor)) {
+                // Calculate new distance including line change penalty if applicable
+                double segmentDistance = calculateSegmentCost(current, neighbor);
+                double newDistance = distances.get(current) + segmentDistance;
 
-            if (visited.contains(current.getName())) {
-                continue;
-            }
-            visited.add(current.getName());
-
-            List<SubwayEdge> edges = adjacencyList.getOrDefault(current.getName(), new ArrayList<>());
-            String currentLine = currentLines.get(current.getName());
-
-            for (SubwayEdge edge : edges) {
-                if (!visited.contains(edge.getToStation().getName())) {
-                    double newDist = distances.get(current.getName()) +
-                            getEdgeWeight(edge, currentMetric, currentLine);
-
-                    if (newDist < distances.get(edge.getToStation().getName())) {
-                        distances.put(edge.getToStation().getName(), newDist);
-                        previousStations.put(edge.getToStation().getName(), current);
-                        currentLines.put(edge.getToStation().getName(), edge.getLine());
-                        queue.offer(edge.getToStation());
-                    }
+                if (newDistance < distances.get(neighbor)) {
+                    distances.put(neighbor, newDistance);
+                    previous.put(neighbor, current);
+                    pq.add(new Node(neighbor, newDistance));
                 }
             }
         }
+    }
 
-        // Reconstruct path
-        List<Station> path = new ArrayList<>();
-        Station current = end;
-        while (current != null) {
-            path.add(0, current);
-            current = previousStations.get(current.getName());
+    // Build the path
+    if (!previous.containsKey(end)) {
+        return null; // No path found
+    }
+
+    List<Station> pathStations = new ArrayList<>();
+    Station current = end;
+    while (current != null) {
+        pathStations.add(0, current);
+        current = previous.get(current);
+    }
+
+    double totalDistance = distances.get(end); // Get the actual distance to end
+    long endTime = System.nanoTime(); // End timing here
+    return new RoutePath(pathStations, endTime - startTime, nodesVisited, maxQueueSize);
+}
+
+
+//    public RoutePath findRoute(Station start, Station end, List<Station> waypoints) {
+//        if (start == null || end == null) {
+//            return null;
+//        }
+//
+//        // Reset metrics
+//        nodesVisited = 0;
+//        maxQueueSize = 0;
+//
+//        // Initialize data structures
+//        Map<Station, Double> distances = new HashMap<>();
+//        Map<Station, Station> previous = new HashMap<>();
+//        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingDouble(Node::getDistance));
+//        Set<Station> visited = new HashSet<>();
+//
+//        // Initialize all distances to infinity
+//        Set<Station> allStations = graph.getAllStations();
+//        for (Station station : allStations) {
+//            distances.put(station, Double.POSITIVE_INFINITY);
+//        }
+//
+//        // Set start distance to 0 and add to queue
+//        distances.put(start, 0.0);
+//        pq.add(new Node(start, 0.0));
+//
+//        long startTime = System.nanoTime();
+//
+//        while (!pq.isEmpty()) {
+//            maxQueueSize = Math.max(maxQueueSize, pq.size());
+//            Node currentNode = pq.poll();
+//            Station current = currentNode.station;
+//            nodesVisited++;
+//
+//            if (current.equals(end)) {
+//                break; // Found the destination
+//            }
+//
+//            if (visited.contains(current)) {
+//                continue;
+//            }
+//            visited.add(current);
+//
+//            // Process all neighbors
+//            for (Station neighbor : graph.getNeighbors(current)) {
+//                if (!visited.contains(neighbor)) {
+//                    // Calculate new distance including line change penalty if applicable
+//                    double segmentDistance = calculateSegmentCost(current, neighbor);
+//                    double newDistance = distances.get(current) + segmentDistance;
+//
+//                    if (newDistance < distances.get(neighbor)) {
+//                        distances.put(neighbor, newDistance);
+//                        previous.put(neighbor, current);
+//                        pq.add(new Node(neighbor, newDistance));
+//                    }
+//                }
+//            }
+//        }
+//
+//        // Build the path
+//        if (!previous.containsKey(end)) {
+//            return null; // No path found
+//        }
+//
+//        List<Station> pathStations = new ArrayList<>();
+//        Station current = end;
+//        while (current != null) {
+//            pathStations.add(0, current);
+//            current = previous.get(current);
+//        }
+//
+//        long endTime = System.nanoTime();
+//        return new RoutePath(pathStations, endTime - startTime, nodesVisited, maxQueueSize);
+//    }
+
+    // Modify calculateSegmentCost to use the selected metric
+    private double calculateSegmentCost(Station from, Station to) {
+        double cost;
+
+        switch (currentMetric) {
+            case DISTANCE:
+                cost = Station.euclideanDistance(from, to);
+                break;
+            case TIME:
+                // Calculate time-based cost (you might need to adjust this based on your needs)
+                cost = Station.euclideanDistance(from, to) / getAverageSpeed();
+                break;
+            case COST:
+                // Calculate monetary cost (you might need to adjust this based on your needs)
+                cost = calculateTravelCost(from, to);
+                break;
+            default:
+                cost = Station.euclideanDistance(from, to);
         }
 
-        if (path.size() <= 1) {
-            System.out.println("No path found - path size: " + path.size());
-            return null;
+        // Apply line change penalty if stations are on different lines
+        if (!sharesLine(from, to)) {
+            cost *= lineChangePenalty;
         }
 
-        System.out.println("Path found with " + path.size() + " stations");
-        return new RoutePath(path, distances.get(end.getName()).longValue(), nodesVisited, maxQueueSize);
+        return cost;
+    }
+
+    // Helper methods for different metrics
+    private double getAverageSpeed() {
+        // Return average speed in appropriate units (e.g., km/h)
+        return 30.0; // Example value, adjust as needed
+    }
+
+    private double calculateTravelCost(Station from, Station to) {
+        // Calculate monetary cost between stations
+        // This could be based on distance, zones, or other factors
+        double baseRate = 2.40; // Example base fare
+        double distanceRate = 0.20; // Example rate per km
+        double distance = Station.euclideanDistance(from, to);
+        return baseRate + (distance * distanceRate);
+    }
+
+    private boolean sharesLine(Station station1, Station station2) {
+        return station1.getLineName().equals(station2.getLineName());
     }
 
 
-    // Add setters for parameters if needed
-    public void setMaxPaths(int maxPaths) {}
-    public void setMaxDeviation(double maxDeviation) {}
-    public void setSimilarityLevel(double similarityLevel) {}
-    public void setRouteMetric(RouteMetric metric) {
-        this.currentMetric = metric;
-    }
-    public void setLineChangePenalty(double penalty) {
-        this.lineChangePenalty = penalty;
+    private static class Node {
+        private final Station station;
+        private final double distance;
+
+        public Node(Station station, double distance) {
+            this.station = station;
+            this.distance = distance;
+        }
+
+        public double getDistance() {
+            return distance;
+        }
     }
 
-    // Add a getter for stationMap
-    public boolean hasStation(String stationName) {
-        return stationMap.containsKey(stationName);
-    }
 
+public List<RoutePath> findMultipleRoutes(Station start, Station end, List<Station> waypoints) {
+    RoutePath route = findRoute(start, end, waypoints);
+    return route != null ? Collections.singletonList(route) : Collections.emptyList();
+}
 }

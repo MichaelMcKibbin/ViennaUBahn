@@ -9,25 +9,35 @@ import java.util.*;
  */
 public class Station {
     private final String stationName;
-    private final String lineName;
-    private final String lineColor;
+    private final Set<String> lineNames; // Change to Set of lines
+    private final Map<String, String> lineColors; // Map line names to colors
+
     private final int x;
     private final int y;
     private List<Station> connectedStations = new ArrayList<>();
 
     public Station(String stationName, String lineName, String lineColor, int x, int y) {
-        Station existingStation = Graph.getStation(stationName);
-        if (existingStation != null && existingStation.getLineName().equals(lineName)) {
-            throw new IllegalArgumentException("Station " + stationName + " already exists on line " + lineName);
-        }
-
         this.stationName = stationName;
-        this.lineName = lineName;
-        this.lineColor = lineColor;
+        this.lineNames = new HashSet<>();
+        this.lineColors = new HashMap<>();
+        addLine(lineName, lineColor);
         this.x = x;
         this.y = y;
 
         Graph.registerStation(this);
+    }
+
+    public void addLine(String lineName, String lineColor) {
+        lineNames.add(lineName);
+        lineColors.put(lineName, lineColor);
+    }
+
+    public Set<String> getLineNames() {
+        return Collections.unmodifiableSet(lineNames);
+    }
+
+    public String getLineColor(String lineName) {
+        return lineColors.get(lineName);
     }
 
     public static double euclideanDistance(Station a, Station b) {
@@ -58,8 +68,15 @@ public class Station {
 
     // getters
     public String getName() { return stationName; }
-    public String getLineName() { return lineName; }
-    public String getLineColor() { return lineColor; }
+    public String getLineName() { return String.join(", ", lineNames); }
+    public String getLineColor() { return String.join(", ", lineColors.values()); }
+    public String getLineAndColor() {
+        StringBuilder sb = new StringBuilder();
+        for (String line : lineNames) {
+            sb.append(line).append(" (").append(lineColors.get(line)).append("), ");
+        }
+        return sb.length() > 0 ? sb.substring(0, sb.length() - 2) : "";
+    }
     public int getX() { return x; }
     public int getY() { return y; }
 
@@ -78,6 +95,6 @@ public class Station {
 
     @Override
     public String toString() {
-        return stationName + " (" + lineName + ")";
+        return stationName + " (" + getLineName() + " - " + getLineColor() +")";
     }
 }

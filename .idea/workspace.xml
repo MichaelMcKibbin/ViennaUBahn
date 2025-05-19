@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="submitted for grading">
+    <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="Before fix map plotting - dijkstras">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Grading_Guide.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Grading_Guide.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Graph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RoutePath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RoutePath.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DijkstraRouteFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DijkstraRouteFinder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Station.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Station.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +26,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
   </component>
@@ -62,7 +65,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "version2",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/onedrive personal/OneDrive/Documents/intellijProjects/RouteFinder",
@@ -130,7 +133,7 @@
       <workItem from="1746853102104" duration="10996000" />
       <workItem from="1747141065258" duration="1390000" />
       <workItem from="1747166043747" duration="642000" />
-      <workItem from="1747367257395" duration="11008000" />
+      <workItem from="1747367257395" duration="29766000" />
     </task>
     <task id="LOCAL-00001" summary="View and map open. Before adding stations to choice list.">
       <option name="closed" value="true" />
@@ -308,7 +311,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747140194153</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Before fix map plotting - dijkstras">
+      <option name="closed" value="true" />
+      <created>1747460523255</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1747460523255</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Before fix map plotting - dijkstras">
+      <option name="closed" value="true" />
+      <created>1747599134968</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1747599134968</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -334,6 +353,7 @@
     <MESSAGE value="before line change penalties" />
     <MESSAGE value="added line change penalties - buggy" />
     <MESSAGE value="submitted for grading" />
-    <option name="LAST_COMMIT_MESSAGE" value="submitted for grading" />
+    <MESSAGE value="Before fix map plotting - dijkstras" />
+    <option name="LAST_COMMIT_MESSAGE" value="Before fix map plotting - dijkstras" />
   </component>
 </project>
