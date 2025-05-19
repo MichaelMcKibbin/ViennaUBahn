@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="Before fix map plotting - dijkstras">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DijkstraRouteFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DijkstraRouteFinder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Station.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Station.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubahn/views/u-bahn-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/michaelmckibbin/viennaubahn/views/u-bahn-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +22,9 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="version2" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -65,7 +66,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "version2",
+    "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/onedrive personal/OneDrive/Documents/intellijProjects/RouteFinder",
@@ -114,6 +115,8 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.com.michaelmckibbin.viennaubahn.MainApplication" />
+        <item itemvalue="Application.MainApplication" />
         <item itemvalue="Application.com.michaelmckibbin.viennaubahn.MainApplication" />
         <item itemvalue="Application.MainApplication" />
       </list>
@@ -332,6 +335,17 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="View and map open. Before adding stations to choice list." />

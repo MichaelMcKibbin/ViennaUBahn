@@ -59,7 +59,7 @@
         <right>
             <VBox maxWidth="250" prefWidth="200" spacing="5">
                 <!-- Route Information -->
-                <VBox fx:id="routeInfoBox" spacing="5" visible="false">
+                <VBox fx:id="routeInfoBox" spacing="5" visible="true" managed="true">
                     <Label style="-fx-font-weight: bold" text="Route:" />
                     <ListView fx:id="routeListView" prefHeight="350" />
                 </VBox>
