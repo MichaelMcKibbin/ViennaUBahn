@@ -327,17 +327,6 @@ public class DFS_RecursiveRouteFinder implements RouteFinder {
         return connections;
     }
 
-    public int getNodesVisited() {
-        return nodesVisited;
-    }
-
-    public int getMaxQueueSize() {
-        return maxQueueSize;
-    }
-
-
-
-
 
     // Make sure there's a reference to the controller
     private Controller controller;

@@ -6,33 +6,35 @@ import javafx.scene.control.Label;
 
 /**
  * This class is responsible for displaying the metrics of a route.
- * It updates the labels on the UI with the number of stops, time taken,
- * nodes visited, and maximum queue size.
+ * It updates the labels on the UI with the number of stops, execution time,
+ * journey duration, and number of transfers.
  */
 public class RouteMetricsDisplay {
     @FXML private Label stopsLabel;
     @FXML private Label timeLabel;
-    @FXML private Label nodesLabel;
-    @FXML private Label queueLabel;
+    @FXML private Label durationLabel;
+    @FXML private Label transfersLabel;
     @FXML private Label euclideanDistLabel;
 
     public RouteMetricsDisplay(Label stopsLabel, Label timeLabel,
-                               Label nodesLabel, Label queueLabel) {
+                             Label durationLabel, Label transfersLabel) {
         this.stopsLabel = stopsLabel;
         this.timeLabel = timeLabel;
-        this.nodesLabel = nodesLabel;
-        this.queueLabel = queueLabel;
+        this.durationLabel = durationLabel;
+        this.transfersLabel = transfersLabel;
     }
 
     public void updateMetrics(int stops, long executionTimeNanos,
-                              int nodesVisited, int maxQueueSize) {
+                            long journeyDuration, int transfers) {
 
-        // Calculate precise time values
+        // Calculate precise time values for execution time
         double milliseconds = executionTimeNanos / 1_000_000.0;
         double microseconds = executionTimeNanos / 1_000.0;
 
         Platform.runLater(() -> {
             stopsLabel.setText("Stops: " + stops);
+
+            // Display algorithm execution time
             if (milliseconds < 0.01) {
                 // For very small times, show microseconds
                 timeLabel.setText(String.format("Time: %.2f μs", microseconds));
@@ -40,21 +42,23 @@ public class RouteMetricsDisplay {
                 // For larger times, show milliseconds
                 timeLabel.setText(String.format("Time: %.4f ms", milliseconds));
             }
-            nodesLabel.setText("Nodes Visited: " + nodesVisited);
-            queueLabel.setText("Max Queue Size: " + maxQueueSize);
 
+            // Display journey duration in minutes
+            durationLabel.setText(String.format("Journey Duration: %d min", journeyDuration));
+
+            // Display number of transfers
+            transfersLabel.setText("Transfers: " + transfers);
         });
 
         // Detailed console output
         System.out.println("\nRoute Metrics:");
         System.out.println("-------------");
         System.out.println("Stops: " + stops);
-        System.out.println(String.format("Time: %.4f ms (%.2f μs)",
+        System.out.println(String.format("Execution Time: %.4f ms (%.2f μs)",
                 milliseconds, microseconds));
-        System.out.println("Raw time: " + executionTimeNanos + " ns");
-        System.out.println("Nodes Visited: " + nodesVisited);
-        System.out.println("Max Queue Size: " + maxQueueSize);
+        System.out.println("Journey Duration: " + journeyDuration + " minutes");
+        System.out.println("Transfers: " + transfers);
+        System.out.println("Raw execution time: " + executionTimeNanos + " ns");
         System.out.println("-------------");
     }
 }
-

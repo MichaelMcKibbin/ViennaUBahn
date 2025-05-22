@@ -101,12 +101,5 @@ public class BFSRouteFinder implements RouteFinder {
         return completePath;
     }
 
-    // Getters for metrics
-    public int getNodesVisited() {
-        return nodesVisited;
-    }
 
-    public int getMaxQueueSize() {
-        return maxQueueSize;
-    }
 }

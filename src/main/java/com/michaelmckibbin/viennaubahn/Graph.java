@@ -124,7 +124,7 @@ public class Graph implements Initializable {
 
     // Get all stations in the graph
     public Set<Station> getAllStations() {
-        return adjacencyList.keySet();
+        return new HashSet<>(adjacencyList.keySet());
     }
 
     // Get neighbors of a station
@@ -240,13 +240,15 @@ public class Graph implements Initializable {
         System.out.println("\n=== Transfer Stations ===");
         Map<String, Set<String>> stationLines = new HashMap<>();
 
-        // Group stations by their lines
-        adjacencyList.keySet().forEach(station -> {
-            if (!stationLines.containsKey(station.getName())) {
-                stationLines.put(station.getName(), new HashSet<>());
-            }
-            stationLines.get(station.getName()).add(station.getLineName());
-        });
+// Group stations by their lines
+adjacencyList.keySet().forEach(station -> {
+    if (!stationLines.containsKey(station.getName())) {
+        stationLines.put(station.getName(), new HashSet<>());
+    }
+    // Add all lines for this station
+    stationLines.get(station.getName()).addAll(station.getLines());
+});
+
 
         // Print stations that appear on multiple lines
         stationLines.forEach((stationName, lines) -> {

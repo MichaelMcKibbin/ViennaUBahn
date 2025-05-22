@@ -5,17 +5,16 @@ import java.util.*;
 // RoutePath class to represent a route between stations
 public class RoutePath {
     private final List<Station> stations;
-    private final long executionTimeNanos;
-    private final int nodesVisited;
-    private final int maxQueueSize;
-    private int numberOfStops;
+    private final long duration;
+    private final int transfers;
+    private final int totalStops;
 
-    // Constructor
-    public RoutePath(List<Station> stations, long executionTimeNanos, int nodesVisited, int maxQueueSize) {
+    // Your existing constructor
+    public RoutePath(List<Station> stations, long duration, int transfers, int totalStops) {
         this.stations = stations;
-        this.executionTimeNanos = executionTimeNanos;
-        this.nodesVisited = nodesVisited;
-        this.maxQueueSize = maxQueueSize;
+        this.duration = duration;
+        this.transfers = calculateTransfers(stations); // Calculate transfers automatically
+        this.totalStops = totalStops;
         validatePath(); // Add validation on construction
     }
 
@@ -66,26 +65,6 @@ public class RoutePath {
     }
 }
 
-
-//    // Add this method to help with debugging
-//    public void printPathDetails() {
-//        System.out.println("Path Details:");
-//        System.out.println("Number of stations: " + stations.size());
-//        System.out.println("Total distance: " + calculateEuclideanDistance());
-//
-//        for (int i = 0; i < stations.size(); i++) {
-//            Station station = stations.get(i);
-//            System.out.printf("Station %d: %s at (%.2f, %.2f)%n",
-//                    i, station.getName(), station.getX(), station.getY());
-//
-//            if (i > 0) {
-//                Station prev = stations.get(i-1);
-//                double segmentDistance = Station.euclideanDistance(prev, station);
-//                System.out.printf("  Distance from previous: %.2f%n", segmentDistance);
-//            }
-//        }
-//    }
-
     // Add this method to verify path continuity
     public boolean verifyPathContinuity() {
         if (stations.size() < 2) return true;
@@ -105,14 +84,6 @@ public class RoutePath {
         return true;
     }
 
-    public void addStation(Station station) {
-        stations.add(station);
-        numberOfStops++;
-    }
-
-    public void setNumberOfStops(int stops) {
-        this.numberOfStops = stops;
-    }
 
     public double calculateEuclideanDistance() {
         double totalEuclideanDistance = 0.0;
@@ -124,25 +95,47 @@ public class RoutePath {
         return totalEuclideanDistance;
     }
 
+    /**
+     * Calculates the number of transfers needed in the route
+     * @param path List of stations in the route
+     * @return Number of transfers
+     */
+    private int calculateTransfers(List<Station> path) {
+        if (path.size() < 2) return 0;
+
+        int transfers = 0;
+        Station currentStation = path.get(0);
+        Set<String> currentLines = currentStation.getLines();
+
+        for (int i = 1; i < path.size(); i++) {
+            Station nextStation = path.get(i);
+            Set<String> nextLines = nextStation.getLines();
+
+            // Check if there's any common line between current and next station
+            if (Collections.disjoint(currentLines, nextLines)) {
+                transfers++;
+                currentLines = nextLines;
+            }
+        }
+        return transfers;
+    }
+
+
     // Getters
     public List<Station> getStations() {
-        return stations;
+        return Collections.unmodifiableList(stations);
     }
 
-    public long getExecutionTimeMillis() {
-        return executionTimeNanos / 1_000_000; // Convert to milliseconds
+    public long getDuration() {
+        return duration;
     }
 
-    public int getNodesVisited() {
-        return nodesVisited;
-    }
-
-    public int getMaxQueueSize() {
-        return maxQueueSize;
+    public int getTransfers() {
+        return transfers;
     }
 
     public int getNumberOfStops() {
-        return stations.size() - 1;
+        return totalStops;
     }
 
 

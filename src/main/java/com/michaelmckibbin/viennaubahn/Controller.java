@@ -338,13 +338,14 @@ private void handleFindRouteDijkstra() {
             routeListView.setVisible(true);
             routeListView.setManaged(true);
 
-            // Update metrics display
             metricsDisplay.updateMetrics(
-                    routePath.getNumberOfStops(),
-                    endTime - startTime,
-                    routePath.getNodesVisited(),
-                    routePath.getMaxQueueSize()
+                    routePath.getNumberOfStops(),    // int stops
+                    endTime - startTime,             // long executionTimeNanos
+                    routePath.getDuration(),         // long journeyDuration
+                    routePath.getTransfers()         // int transfers
             );
+
+
         } else {
             System.out.println("No route found!");
         }
@@ -421,13 +422,14 @@ private void handleFindRouteDijkstra() {
         performanceBox.setVisible(true);
 
 
-        // Update metrics
         metricsDisplay.updateMetrics(
-                routePath.getNumberOfStops(),
-                executionTime,
-                routePath.getNodesVisited(),
-                routePath.getMaxQueueSize()
+                routePath.getNumberOfStops(),    // int stops
+                endTime - startTime,             // long executionTimeNanos
+                routePath.getDuration(),         // long journeyDuration
+                routePath.getTransfers()         // int transfers
         );
+
+
 
         updateRouteNavigationControls();
         routePath.printPathDetails();
@@ -443,17 +445,31 @@ private void handleFindRouteDijkstra() {
 
 
 
-    private void updateRouteMetrics(RoutePath routePath, long duration) {
-        System.out.println("\nRoute Metrics:");
-        System.out.println("-------------");
-        System.out.println("Stops: " + routePath.getStations().size());
-        System.out.println("Time: " + (duration / 1_000_000.0) + " ms (" +
-                String.format("%.2f", duration / 1_000.0) + " μs)");
-        System.out.println("Raw time: " + duration + " ns");
-        System.out.println("Nodes Visited: " + routePath.getNodesVisited());
-        System.out.println("Max Queue Size: " + routePath.getMaxQueueSize());
-        System.out.println("-------------");
+private void updateRouteMetrics(RoutePath routePath, long duration) {
+    // Calculate time values
+    double milliseconds = duration / 1_000_000.0;
+    double microseconds = duration / 1_000.0;
+
+    System.out.println("\nRoute Metrics:");
+    System.out.println("-------------");
+    System.out.println("Stops: " + routePath.getStations().size());
+    System.out.println("Time: " + milliseconds + " ms (" +
+            String.format("%.2f", microseconds) + " μs)");
+    System.out.println("Raw time: " + duration + " ns");
+    System.out.println("Journey Duration: " + routePath.getDuration() + " minutes");
+    System.out.println("Transfers: " + routePath.getTransfers());
+
+    // Optional: Calculate and display additional route information
+    if (routePath.getStations().size() >= 2) {
+        Station start = routePath.getStations().get(0);
+        Station end = routePath.getStations().get(routePath.getStations().size() - 1);
+        System.out.println("Start Station: " + start.getName());
+        System.out.println("End Station: " + end.getName());
     }
+
+    System.out.println("-------------");
+}
+
     void updateRouteNavigationControls() {
         boolean hasMultipleRoutes = foundRoutes.size() > 1;
         previousRouteButton.setDisable(!hasMultipleRoutes || currentRouteIndex == 0);
@@ -564,24 +580,7 @@ private void handleFindRouteDFSRecursive() {
             // End timing
             long endTime = System.nanoTime();
             long executionTime = endTime - startTime;
-//
-//            if (routePath != null) {
-//                routeVisualizer.drawRoute(routePath);
-//
-//                // Update route list view
-//                routeListView.getItems().clear();
-//                routeListView.getItems().addAll(routePath.getStations());
-//
-//                // Update route list and metrics
-//                routeInfoBox.setVisible(true);
-//                performanceBox.setVisible(true);
-//
-//                metricsDisplay.updateMetrics(
-//                        routePath.getNumberOfStops(),
-//                        executionTime,
-//                        routePath.getNodesVisited(),
-//                        routePath.getMaxQueueSize()
-//                );
+
 
             if (currentRoutes != null && !currentRoutes.isEmpty()) {
                 currentRouteIndex = 0;
@@ -664,29 +663,104 @@ private void handleFindRouteDFSRecursive() {
         }
     }
 
-    private void displayCurrentRoute(long executionTime) {
-        List<Station> currentPath = currentRoutes.get(currentRouteIndex);
+private void displayCurrentRoute(long executionTime) {
+    List<Station> currentPath = currentRoutes.get(currentRouteIndex);
 
-        routeVisualizer.drawRoute(new RoutePath(currentPath, executionTime,
-                dfsRecursiveRouteFinder.getNodesVisited(),
-                dfsRecursiveRouteFinder.getMaxQueueSize()));
+    // Calculate duration and transfers for the route
+    long journeyDuration = calculateJourneyDuration(currentPath);
+    int transfers = calculateTransfers(currentPath);
 
-        routeListView.getItems().clear();
-        routeListView.getItems().addAll(currentPath);
+    // Create new RoutePath with the updated constructor parameters
+    RoutePath routePath = new RoutePath(
+            currentPath,
+            journeyDuration,  // Journey duration in minutes
+            transfers,        // Number of transfers
+            currentPath.size() - 1  // Total stops (stations - 1)
+    );
 
-        routeInfoBox.setVisible(true);
-        performanceBox.setVisible(true);
+    routeVisualizer.drawRoute(routePath);
 
-        routeNumberLabel.setText(String.format("Route %d of %d",
-                currentRouteIndex + 1, currentRoutes.size()));
+    routeListView.getItems().clear();
+    routeListView.getItems().addAll(currentPath);
 
-        metricsDisplay.updateMetrics(
-                currentPath.size(),
-                executionTime,
-                dfsRecursiveRouteFinder.getNodesVisited(),
-                dfsRecursiveRouteFinder.getMaxQueueSize()
-        );
+    routeInfoBox.setVisible(true);
+    performanceBox.setVisible(true);
+
+    routeNumberLabel.setText(String.format("Route %d of %d",
+            currentRouteIndex + 1, currentRoutes.size()));
+}
+
+/**
+ * Calculates the number of transfers needed in the route
+ * @param path List of stations in the route
+ * @return Number of transfers
+ */
+
+
+/**
+ * Calculates the number of transfers in the route
+ * @param path List of stations in the route
+ * @return Number of transfers
+ */
+private int calculateTransfers(List<Station> path) {
+    if (path.size() < 2) return 0;
+
+    int transfers = 0;
+    Station currentStation = path.get(0);
+    Set<String> currentLines = currentStation.getLines();
+
+    for (int i = 1; i < path.size(); i++) {
+        Station nextStation = path.get(i);
+        Set<String> nextLines = nextStation.getLines();
+
+        // Check if there's any common line between current and next station
+        if (Collections.disjoint(currentLines, nextLines)) {
+            transfers++;
+            currentLines = nextLines;
+        }
     }
+    return transfers;
+}
+
+/**
+ * Calculates the total journey duration in minutes
+ * @param path List of stations in the route
+ * @return Journey duration in minutes
+ */
+private long calculateJourneyDuration(List<Station> path) {
+    if (path.size() < 2) return 0;
+
+    long totalDuration = 0;
+    Station currentStation = path.get(0);
+    Set<String> currentLines = currentStation.getLines();
+
+    for (int i = 1; i < path.size(); i++) {
+        Station nextStation = path.get(i);
+        Set<String> nextLines = nextStation.getLines();
+
+        // Calculate base travel time using distance
+        double distance = Station.euclideanDistance(currentStation, nextStation);
+        // Assume average speed of 30 units per minute
+        long baseTime = Math.round(distance / 30.0);
+
+        // Check if there's any common line between current and next station
+        if (Collections.disjoint(currentLines, nextLines)) {
+            // Transfer required - add transfer penalty
+            totalDuration += baseTime + 5; // 5 minutes transfer penalty
+        } else {
+            // Same line - just add base travel time
+            totalDuration += baseTime;
+        }
+
+        // Update current station and lines for next iteration
+        currentStation = nextStation;
+        currentLines = nextLines;
+    }
+
+    return totalDuration;
+}
+
+
 
     private double calculateEuclideanDistance(List<Station> stations) {
         double totalEuclideanDistance = 0.0;
@@ -785,11 +859,13 @@ private void handleFindRouteBFS() {
             performanceBox.setVisible(true);
 
             metricsDisplay.updateMetrics(
-                routePath.getNumberOfStops(),
-                executionTime,  // Pass the measured execution time
-                routePath.getNodesVisited(),
-                routePath.getMaxQueueSize()
+                    routePath.getNumberOfStops(),    // int stops
+                    endTime - startTime,             // long executionTimeNanos
+                    routePath.getDuration(),         // long journeyDuration
+                    routePath.getTransfers()         // int transfers
             );
+
+
 
             System.out.println("Route found successfully!");
         } else {
@@ -813,9 +889,17 @@ private void setupRouteListView() {
                 setText(null);
                 setStyle(null);
             } else {
-                setText(station.getName() + " (" + station.getLineName() + ")");
+                // Set the text content
+                setText(station.getName() + " (" + station.getLineAndColor() + ")");
 
-                String lineColor = station.getLineColor().toUpperCase();
+                // Get the first line's color for background
+                Set<String> lines = station.getLines();
+                String lineColor = "";
+                if (!lines.isEmpty()) {
+                    String firstLine = lines.iterator().next();
+                    lineColor = station.getLineColor(firstLine).toUpperCase();
+                }
+
                 String backgroundColor;
                 String textColor = "white"; // default text color
 
@@ -839,12 +923,14 @@ private void setupRouteListView() {
                         backgroundColor = "white";
                 }
 
+                // Apply the style
                 setStyle(String.format("-fx-background-color: %s; -fx-text-fill: %s;",
                     backgroundColor, textColor));
             }
         }
     });
 }
+
 
 
 

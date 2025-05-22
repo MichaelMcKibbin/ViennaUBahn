@@ -9,7 +9,8 @@ import java.util.*;
  */
 public class Station {
     private final String stationName;
-    private final Set<String> lineNames; // Change to Set of lines
+    private final Set<String> lineNames;
+
     private final Map<String, String> lineColors; // Map line names to colors
 
     private final int x;
@@ -60,15 +61,34 @@ public class Station {
         } else {
             System.out.println("Number of connections: " + connectedStations.size());
             for (Station s : connectedStations) {
-                System.out.println("  Connected to: " + s.getName() + " (" + s.getLineName() + ")");
+                System.out.println("  Connected to: " + s.getName() + " (Lines: " +
+                        String.join(", ", s.getLines()) + ")");
             }
         }
         return connectedStations;
     }
 
+
+    /**
+     * Gets all lines this station belongs to
+     * @return Set of line identifiers
+     */
+    public Set<String> getLines() {
+        return Collections.unmodifiableSet(lineNames);
+    }
+    /**
+     * Gets the primary line (first line) of this station
+     * @return the line identifier
+     */
+    public String getLine() {
+        return lineNames.iterator().next();
+    }
+
     // getters
     public String getName() { return stationName; }
-    public String getLineName() { return String.join(", ", lineNames); }
+    public String getLinesAsString() {
+        return String.join(", ", lineNames);
+    }
     public String getLineColor() { return String.join(", ", lineColors.values()); }
     public String getLineAndColor() {
         StringBuilder sb = new StringBuilder();
@@ -95,6 +115,6 @@ public class Station {
 
     @Override
     public String toString() {
-        return stationName + " (" + getLineName() + " - " + getLineColor() +")";
+        return stationName + " (Lines: " + getLinesAsString() + " - " + getLineColor() + ")";
     }
 }

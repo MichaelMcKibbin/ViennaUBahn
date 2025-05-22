@@ -46,7 +46,7 @@ public class StationListManager {
                 if (empty || station == null) {
                     setText(null);
                 } else {
-                    setText(station.getName() + " " + station.getLineName());
+                    setText(station.getName() + " " + station.getLinesAsString());
                 }
             }
         });
@@ -57,7 +57,7 @@ public class StationListManager {
             @Override
             public String toString(Station station) {
                 return station == null ? "" :
-                       station.getName() + " " + station.getLineName();
+                        station.getName() + " " + station.getLinesAsString();
             }
 
             @Override
@@ -75,7 +75,7 @@ public class StationListManager {
                 if (empty || station == null) {
                     setText(null);
                 } else {
-                    setText(station.getName() + " " + station.getLineName());
+                    setText(station.getName() + " " + station.getLinesAsString());
                 }
             }
         });
@@ -89,7 +89,7 @@ public class StationListManager {
                 if (empty || station == null) {
                     setText(null);
                 } else {
-                    setText(station.getName() + " " + station.getLineName());
+                    setText(station.getName() + " " + station.getLinesAsString());
                 }
             }
         });
