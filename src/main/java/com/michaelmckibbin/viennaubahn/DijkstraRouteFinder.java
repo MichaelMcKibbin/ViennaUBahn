@@ -5,6 +5,11 @@ import javafx.scene.Node;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+/**
+ * Dijkstra's algorithm implementation for finding the shortest path between two stations.
+ * This class uses a priority queue to efficiently explore the graph and find the shortest path.
+ */
 public class DijkstraRouteFinder implements RouteFinder {
     private static final double DEFAULT_TRANSFER_PENALTY = 5.0;
     private double lineChangePenalty = DEFAULT_TRANSFER_PENALTY;

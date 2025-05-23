@@ -2,7 +2,10 @@ package com.michaelmckibbin.viennaubahn;
 
 import java.util.*;
 
-// RoutePath class to represent a route between stations
+/**
+ * This class represents a route path between stations in the Vienna subway system.
+ * It contains information about the stations, duration, transfers, and total stops.
+ */
 public class RoutePath {
     private final List<Station> stations;
     private final long duration;

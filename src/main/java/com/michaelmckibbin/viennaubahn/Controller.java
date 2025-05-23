@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Controller class for the Vienna U-Bahn application
+ */
 public class Controller {
 
     private static final double ORIGINAL_WIDTH = 1488.0;
