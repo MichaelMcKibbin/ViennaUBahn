@@ -2,6 +2,7 @@ package com.michaelmckibbin.viennaubahn;
 
 import java.util.*;
 public class BFSRouteFinder implements RouteFinder {
+
     private final Graph graph;
     private int nodesVisited;
     private int maxQueueSize;

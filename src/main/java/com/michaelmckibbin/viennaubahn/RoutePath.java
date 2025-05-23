@@ -9,7 +9,7 @@ public class RoutePath {
     private final int transfers;
     private final int totalStops;
 
-    // Your existing constructor
+    // constructor
     public RoutePath(List<Station> stations, long duration, int transfers, int totalStops) {
         this.stations = stations;
         this.duration = duration;
@@ -18,7 +18,7 @@ public class RoutePath {
         validatePath(); // Add validation on construction
     }
 
-    // Add this method to validate the path
+    // validate path
     private void validatePath() {
         if (stations == null || stations.isEmpty()) {
             throw new IllegalStateException("Path cannot be empty");
@@ -74,7 +74,7 @@ public class RoutePath {
             Station next = stations.get(i + 1);
             double distance = Station.euclideanDistance(current, next);
 
-            // You might need to adjust this threshold based on your map scale
+            // Might need to adjust this threshold based on map scale
             if (distance > 100) { // arbitrary threshold, adjust as needed
                 System.out.printf("Warning: Large gap detected between %s and %s: %.2f units%n",
                         current.getName(), next.getName(), distance);

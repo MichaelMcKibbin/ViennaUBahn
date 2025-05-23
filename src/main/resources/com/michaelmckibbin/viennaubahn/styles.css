@@ -17,7 +17,7 @@
     -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 32px;
     -fx-font-weight: bold;
-    -fx-text-fill: -fx-primary;  /* Using your existing color variable */
+    -fx-text-fill: -fx-primary;
     -fx-padding: 10px 0;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1);
 }

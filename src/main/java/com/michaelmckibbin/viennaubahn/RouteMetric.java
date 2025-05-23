@@ -33,4 +33,5 @@ public enum RouteMetric {
 
     /** Optimizes route based on travel cost between stations */
     COST
+
 }

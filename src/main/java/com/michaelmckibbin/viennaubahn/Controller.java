@@ -1,5 +1,6 @@
 package com.michaelmckibbin.viennaubahn;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -242,25 +244,25 @@ private void handleFindRouteDijkstra() {
         System.out.println("Dijkstra Search initiated...");
         clearRouteDisplay();
         currentRouteFinder = dijkstraRouteFinder;
-
-        // Get the selected stations
         Station startStation = startStationComboBox.getValue();
         Station endStation = endStationComboBox.getValue();
-        Station waypoint = waypointComboBox.getValue();
 
-        // Create waypoints list if waypoint is selected
-        List<Station> waypoints = new ArrayList<>();
-        if (waypoint != null) {
-            waypoints.add(waypoint);
-            System.out.println("Added waypoint: " + waypoint.getName());
-        }
+        // Get waypoints from waypointListView instead of single ComboBox
+        List<Station> waypoints = new ArrayList<>(waypointsListView.getItems());
+
+        System.out.println("Waypoints selected: " +
+                waypoints.stream()
+                        .map(Station::getName)
+                        .collect(Collectors.joining(", ")));
 
         if (startStation == null || endStation == null) {
             System.out.println("Please select both start and end stations");
             return;
         }
 
-        System.out.println("Finding route from " + startStation.getName() + " to " + endStation.getName());
+        System.out.println("Finding route from " + startStation.getName() +
+                " to " + endStation.getName() +
+                " via " + waypoints.size() + " waypoints");
 
         // Update the line change penalty before finding route
         if (dijkstraRouteFinder != null) {
@@ -327,16 +329,21 @@ private void handleFindRouteDijkstra() {
                             i, station.getName(), station.getX(), station.getY());
                 }
 
-            // Update the route list view with Station objects directly
+            // Clear and populate the routeListView
             routeListView.getItems().clear();
             routeListView.getItems().addAll(routePath.getStations());
-
-            // Debug output
             System.out.println("RouteListView items count: " + routeListView.getItems().size());
 
-            // Make sure the ListView is visible
-            routeListView.setVisible(true);
-            routeListView.setManaged(true);
+            // Ensure both container and ListView are visible
+            Platform.runLater(() -> {
+                routeInfoBox.setVisible(true);
+                routeInfoBox.setManaged(true);
+                routeListView.setVisible(true);
+                routeListView.setManaged(true);
+
+                // Force layout update
+                routeInfoBox.requestLayout();
+            });
 
             metricsDisplay.updateMetrics(
                     routePath.getNumberOfStops(),    // int stops

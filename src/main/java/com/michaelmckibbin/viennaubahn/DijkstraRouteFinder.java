@@ -1,79 +1,40 @@
 package com.michaelmckibbin.viennaubahn;
 
-import javafx.scene.Node;
-import javafx.scene.shape.Line;
 
+import javafx.scene.Node;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DijkstraRouteFinder implements RouteFinder {
-    private static final double TRANSFER_PENALTY = 5.0; // Penalty for line transfers
+    private static final double DEFAULT_TRANSFER_PENALTY = 5.0;
+    private double lineChangePenalty = DEFAULT_TRANSFER_PENALTY;
+    private RouteMetric routeMetric = RouteMetric.DISTANCE;
+    private int nodesVisited;
+    private int maxQueueSize;
     private final Graph graph;
-    private double lineChangePenalty = 1.0; // Default penalty for changing lines
-    private int nodesVisited = 0;
-    private int maxQueueSize = 0;
-    private RouteMetric currentMetric = RouteMetric.DISTANCE; // Default metric
 
+    // Inner class for nodes in priority queue
+    private static class Node {
+        private final Station station;
+        private final double distance;
 
-    // setter
-    public void setRouteMetric(RouteMetric metric) {
-        this.currentMetric = metric;
+        public Node(Station station, double distance) {
+            this.station = station;
+            this.distance = distance;
+        }
+
+        public Station getStation() {
+            return station;
+        }
+
+        public double getDistance() {
+            return distance;
+        }
     }
 
     public DijkstraRouteFinder(Graph graph) {
         this.graph = graph;
     }
-
-    public void setLineChangePenalty(double penalty) {
-        this.lineChangePenalty = penalty;
-    }
-
-
-    @Override
-    public RoutePath findRoute(Station start, Station end, List<Station> waypoints) {
-    long startTime = System.nanoTime();
-
-    List<Station> completePath = new ArrayList<>();
-    Station currentStart = start;
-
-    // Modified to match other route finders' approach
-    List<Station> allPoints = new ArrayList<>();
-    allPoints.add(start);           // Add start station first
-    allPoints.addAll(waypoints);    // Add waypoints
-    allPoints.add(end);            // Add end station last
-
-    // Start from index 1 since we don't need to find path to the start station
-    for (int i = 1; i < allPoints.size(); i++) {
-        Station nextDestination = allPoints.get(i);
-        Station currentSource = allPoints.get(i - 1);  // Get previous station as source
-
-        List<Station> segmentPath = findPathSegment(currentSource, nextDestination);
-
-        if (segmentPath == null || segmentPath.isEmpty()) {
-            System.out.println("No valid path found through waypoint: " + nextDestination.getName());
-            return null;
-        }
-
-        if (completePath.isEmpty()) {
-            completePath.addAll(segmentPath);
-        } else {
-            completePath.addAll(segmentPath.subList(1, segmentPath.size()));
-        }
-    }
-
-    long endTime = System.nanoTime();
-
-    int transfers = calculateTransfers(completePath);
-    long duration = calculateDuration(completePath);
-    int totalStops = completePath.size() - 1;
-
-    return new RoutePath(
-            completePath,    // List<Station> stations
-            duration,        // long duration
-            transfers,       // int transfers
-            totalStops      // int totalStops
-    );
-}
-
 
     private int calculateTransfers(List<Station> path) {
         if (path.size() < 2) return 0;
@@ -86,7 +47,6 @@ public class DijkstraRouteFinder implements RouteFinder {
             Station nextStation = path.get(i);
             Set<String> nextLines = nextStation.getLines();
 
-            // Check if there's any common line between current and next station
             if (Collections.disjoint(currentLines, nextLines)) {
                 transfers++;
                 currentLines = nextLines;
@@ -103,7 +63,7 @@ public class DijkstraRouteFinder implements RouteFinder {
             Station current = path.get(i);
             Station next = path.get(i + 1);
 
-            // Base duration between stations (using distance)
+            // Base duration between stations
             double distance = Station.euclideanDistance(current, next);
             long baseDuration = Math.round(distance / 30.0); // Assume 30 units per minute
 
@@ -119,60 +79,73 @@ public class DijkstraRouteFinder implements RouteFinder {
 
     private List<Station> findPathSegment(Station start, Station end) {
         Map<Station, Double> distances = new HashMap<>();
-        Map<Station, Station> previousStations = new HashMap<>();
-        PriorityQueue<Station> queue = new PriorityQueue<>(
-                Comparator.comparingDouble(distances::get));
+        Map<Station, Station> previous = new HashMap<>();
+        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingDouble(Node::getDistance));
         Set<Station> visited = new HashSet<>();
 
         // Initialize distances
-        for (Station station : graph.getAllStations()) { // Changed from getStations() to getAllStations()
+        for (Station station : graph.getAllStations()) {
             distances.put(station, Double.POSITIVE_INFINITY);
         }
         distances.put(start, 0.0);
-        queue.offer(start);
+        pq.offer(new Node(start, 0.0));
 
-        while (!queue.isEmpty()) {
-            Station current = queue.poll();
+        while (!pq.isEmpty()) {
+            Node current = pq.poll();
+            Station currentStation = current.getStation();
+            nodesVisited++;
 
-            if (current.equals(end)) {
+            if (currentStation.equals(end)) {
                 break;
             }
 
-            if (visited.contains(current)) {
+            if (visited.contains(currentStation)) {
                 continue;
             }
 
-            visited.add(current);
+            visited.add(currentStation);
 
-            for (Station neighbor : graph.getNeighbors(current)) {
+            for (Station neighbor : graph.getNeighbors(currentStation)) {
                 if (visited.contains(neighbor)) {
                     continue;
                 }
 
-                double distance = distances.get(current) + calculateWeight(current, neighbor);
-
-                if (distance < distances.get(neighbor)) {
-                    distances.put(neighbor, distance);
-                    previousStations.put(neighbor, current);
-                    queue.offer(neighbor);
+                double newDist = distances.get(currentStation) + calculateWeight(currentStation, neighbor);
+                if (newDist < distances.get(neighbor)) {
+                    distances.put(neighbor, newDist);
+                    previous.put(neighbor, currentStation);
+                    pq.offer(new Node(neighbor, newDist));
                 }
             }
         }
+        // Reconstruct path
+        List<Station> path = new ArrayList<>();
+        Station current = end;
 
-        return reconstructPath(start, end, previousStations);
+        // Check if we actually found a path to the end
+        if (!previous.containsKey(end) && !end.equals(start)) {
+            System.out.println("No path found between " + start.getName() + " and " + end.getName());
+            return null;
+        }
+
+        while (current != null) {
+            path.add(0, current);
+            current = previous.get(current);
+        }
+
+        return path;
     }
 
-    private List<Station> reconstructPath(Station start, Station end,
-                                          Map<Station, Station> previousStations) {
+    private List<Station> reconstructPath(Station start, Station end, Map<Station, Station> previous) {
         List<Station> path = new ArrayList<>();
         Station current = end;
 
         while (current != null) {
             path.add(0, current);
-            current = previousStations.get(current);
+            current = previous.get(current);
         }
 
-        // Verify that the path starts at the start station
+        // Verify path starts at start station
         if (path.isEmpty() || !path.get(0).equals(start)) {
             return null;
         }
@@ -180,13 +153,45 @@ public class DijkstraRouteFinder implements RouteFinder {
         return path;
     }
 
+    public void setRouteMetric(RouteMetric metric) {
+        this.routeMetric = metric;
+    }
+
+    public void setLineChangePenalty(double penalty) {
+        this.lineChangePenalty = penalty;
+    }
+
     private double calculateWeight(Station station1, Station station2) {
-        double distance = Station.euclideanDistance(station1, station2);
-        // Add penalty for transfers between lines
-        if (!sharesLine(station1, station2)) {
-            distance += TRANSFER_PENALTY;
+        double weight;
+
+        switch (routeMetric) {
+            case TIME:
+                // Time-based weight calculation
+                weight = Station.euclideanDistance(station1, station2) / 30.0; // Assume 30 units per minute
+                if (!sharesLine(station1, station2)) {
+                    weight += lineChangePenalty;
+                }
+                break;
+
+            case COST:
+                // Cost-based weight calculation
+                weight = Station.euclideanDistance(station1, station2) * 0.1; // Example cost calculation
+                if (!sharesLine(station1, station2)) {
+                    weight += lineChangePenalty * 2; // Example: transfers cost more
+                }
+                break;
+
+            case DISTANCE:
+            default:
+                // Distance-based weight calculation (default)
+                weight = Station.euclideanDistance(station1, station2);
+                if (!sharesLine(station1, station2)) {
+                    weight += lineChangePenalty;
+                }
+                break;
         }
-        return distance;
+
+        return weight;
     }
 
     private boolean sharesLine(Station station1, Station station2) {
@@ -195,141 +200,65 @@ public class DijkstraRouteFinder implements RouteFinder {
         return !Collections.disjoint(lines1, lines2);
     }
 
+    @Override
+    public RoutePath findRoute(Station start, Station end, List<Station> waypoints) {
+        long startTime = System.nanoTime();
 
+        // Debug logging
+        System.out.println("Starting route calculation:");
+        System.out.println("Start: " + start.getName());
+        System.out.println("End: " + end.getName());
+        System.out.println("Waypoints: " + waypoints.stream()
+                .map(Station::getName)
+                .collect(Collectors.joining(", ")));
 
-    private RoutePath findDirectRoute(Station start, Station end) {
-    // Reset metrics
-    nodesVisited = 0;
-    maxQueueSize = 0;
-    long startTime = System.nanoTime(); // Start timing here
+        List<List<Station>> foundPaths = new ArrayList<>();
+        List<Station> allPoints = new ArrayList<>();
+        allPoints.add(start);
+        allPoints.addAll(waypoints);
+        allPoints.add(end);
 
-    // Initialize data structures
-    Map<Station, Double> distances = new HashMap<>();
-    Map<Station, Station> previous = new HashMap<>();
-    PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingDouble(Node::getDistance));
-    Set<Station> visited = new HashSet<>();
+        // Find paths between consecutive points
+        for (int i = 0; i < allPoints.size() - 1; i++) {
+            Station source = allPoints.get(i);
+            Station target = allPoints.get(i + 1);
 
-    // Initialize all distances to infinity
-    Set<Station> allStations = graph.getAllStations();
-    for (Station station : allStations) {
-        distances.put(station, Double.POSITIVE_INFINITY);
-    }
+            System.out.println("Finding path segment from " + source.getName() + " to " + target.getName());
 
-    // Set start distance to 0 and add to queue
-    distances.put(start, 0.0);
-    pq.add(new Node(start, 0.0));
+            List<Station> pathSegment = findPathSegment(source, target);
+            if (pathSegment == null || pathSegment.isEmpty()) {
+                System.out.println("Failed to find path between " + source.getName() + " and " + target.getName());
+                return null;
+            }
 
+            System.out.println("Found path segment: " + pathSegment.stream()
+                    .map(Station::getName)
+                    .collect(Collectors.joining(" -> ")));
 
-
-    while (!pq.isEmpty()) {
-        maxQueueSize = Math.max(maxQueueSize, pq.size());
-        Node currentNode = pq.poll();
-        Station current = currentNode.station;
-        nodesVisited++;
-
-        if (current.equals(end)) {
-            break; // Found the destination
+            foundPaths.add(pathSegment);
         }
 
-        if (visited.contains(current)) {
-            continue;
-        }
-        visited.add(current);
-
-        // Process all neighbors
-        for (Station neighbor : graph.getNeighbors(current)) {
-            if (!visited.contains(neighbor)) {
-                // Calculate new distance including line change penalty if applicable
-                double segmentDistance = calculateSegmentCost(current, neighbor);
-                double newDistance = distances.get(current) + segmentDistance;
-
-                if (newDistance < distances.get(neighbor)) {
-                    distances.put(neighbor, newDistance);
-                    previous.put(neighbor, current);
-                    pq.add(new Node(neighbor, newDistance));
-                }
+        // Combine all paths
+        List<Station> completePath = new ArrayList<>();
+        for (int i = 0; i < foundPaths.size(); i++) {
+            List<Station> segment = foundPaths.get(i);
+            if (i == 0) {
+                completePath.addAll(segment);
+            } else {
+                // Skip the first station of subsequent segments to avoid duplicates
+                completePath.addAll(segment.subList(1, segment.size()));
             }
         }
+
+        System.out.println("Complete path: " + completePath.stream()
+                .map(Station::getName)
+                .collect(Collectors.joining(" -> ")));
+
+        long endTime = System.nanoTime();
+        int transfers = calculateTransfers(completePath);
+        long duration = calculateDuration(completePath);
+        int totalStops = completePath.size() - 1;
+
+        return new RoutePath(completePath, duration, transfers, totalStops);
     }
-
-    // Build the path
-    if (!previous.containsKey(end)) {
-        return null; // No path found
-    }
-
-    List<Station> pathStations = new ArrayList<>();
-    Station current = end;
-    while (current != null) {
-        pathStations.add(0, current);
-        current = previous.get(current);
-    }
-
-    double totalDistance = distances.get(end); // Get the actual distance to end
-    long endTime = System.nanoTime(); // End timing here
-    return new RoutePath(pathStations, endTime - startTime, nodesVisited, maxQueueSize);
-}
-
-    // Modify calculateSegmentCost to use the selected metric
-    private double calculateSegmentCost(Station from, Station to) {
-        double cost;
-
-        switch (currentMetric) {
-            case DISTANCE:
-                cost = Station.euclideanDistance(from, to);
-                break;
-            case TIME:
-                // Calculate time-based cost (you might need to adjust this based on your needs)
-                cost = Station.euclideanDistance(from, to) / getAverageSpeed();
-                break;
-            case COST:
-                // Calculate monetary cost (you might need to adjust this based on your needs)
-                cost = calculateTravelCost(from, to);
-                break;
-            default:
-                cost = Station.euclideanDistance(from, to);
-        }
-
-        // Apply line change penalty if stations are on different lines
-        if (!sharesLine(from, to)) {
-            cost *= lineChangePenalty;
-        }
-
-        return cost;
-    }
-
-    // Helper methods for different metrics
-    private double getAverageSpeed() {
-        // Return average speed in appropriate units (e.g., km/h)
-        return 30.0; // Example value, adjust as needed
-    }
-
-    private double calculateTravelCost(Station from, Station to) {
-        // Calculate monetary cost between stations
-        // This could be based on distance, zones, or other factors
-        double baseRate = 2.40; // Example base fare
-        double distanceRate = 0.20; // Example rate per km
-        double distance = Station.euclideanDistance(from, to);
-        return baseRate + (distance * distanceRate);
-    }
-
-
-    private static class Node {
-        private final Station station;
-        private final double distance;
-
-        public Node(Station station, double distance) {
-            this.station = station;
-            this.distance = distance;
-        }
-
-        public double getDistance() {
-            return distance;
-        }
-    }
-
-
-public List<RoutePath> findMultipleRoutes(Station start, Station end, List<Station> waypoints) {
-    RoutePath route = findRoute(start, end, waypoints);
-    return route != null ? Collections.singletonList(route) : Collections.emptyList();
-}
 }
