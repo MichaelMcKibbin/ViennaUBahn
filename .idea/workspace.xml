@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="Dijkstras route mapping plotting correctly. Added waypoints.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DijkstraRouteFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/DijkstraRouteFinder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RoutePath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/michaelmckibbin/viennaubahn/RoutePath.java" afterDir="false" />
-    </list>
+    <list default="true" id="3b694e7d-b64f-4999-8ef6-1dfc08314fe3" name="Changes" comment="Submitted for grading. 81%. Updated readme.md" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -82,6 +77,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\onedrive personal\OneDrive\Documents\intellijProjects\ViennaUBahn\docs" />
       <recent name="D:\onedrive personal\OneDrive\Documents\intellijProjects\ViennaUBhan\src\main\resources\com\michaelmckibbin\viennaubhan\views" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -139,7 +135,7 @@
       <workItem from="1747141065258" duration="1390000" />
       <workItem from="1747166043747" duration="642000" />
       <workItem from="1747367257395" duration="29766000" />
-      <workItem from="1747791177185" duration="37119000" />
+      <workItem from="1747791177185" duration="48664000" />
     </task>
     <task id="LOCAL-00001" summary="View and map open. Before adding stations to choice list.">
       <option name="closed" value="true" />
@@ -357,7 +353,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747970872821</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Submitted for grading. 81%.">
+      <option name="closed" value="true" />
+      <created>1748025117567</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1748025117567</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Submitted for grading. 81%. Updated readme.md">
+      <option name="closed" value="true" />
+      <created>1748225005360</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1748225005360</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -375,7 +387,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="View and map open. Before adding stations to choice list." />
     <MESSAGE value="Added Graph Debug. Before adding stations to choice list." />
     <MESSAGE value="BFS working. adjusting window layout." />
     <MESSAGE value="Draw route in line matching colours. BFS good." />
@@ -398,6 +409,9 @@
     <MESSAGE value="Fixed route station list display issues." />
     <MESSAGE value="Dijkstras route mapping plotting correctly. Before waypoints." />
     <MESSAGE value="Dijkstras route mapping plotting correctly. Added waypoints." />
-    <option name="LAST_COMMIT_MESSAGE" value="Dijkstras route mapping plotting correctly. Added waypoints." />
+    <MESSAGE value="Submitted for grading. 81%. This repo paused. Future development in another repo will remove some" />
+    <MESSAGE value="Submitted for grading. 81%." />
+    <MESSAGE value="Submitted for grading. 81%. Updated readme.md" />
+    <option name="LAST_COMMIT_MESSAGE" value="Submitted for grading. 81%. Updated readme.md" />
   </component>
 </project>
